@@ -1,0 +1,18 @@
+{
+	"parser": "babel-eslint",
+	"extends": [
+		"eslint:recommended",
+		"plugin:prettier/recommended",
+		"plugin:react/recommended"
+	],
+	"parserOptions": {
+		"sourceType": "module",
+		"ecmaVersion": 6
+	},
+	"plugins": ["react"],
+	"rules": {
+		"indent": "off",
+		"prettier/prettier": [2, { "useTabs": true }],
+		"react/prop-types": 0
+	}
+}

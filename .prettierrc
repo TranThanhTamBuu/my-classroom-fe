@@ -1,0 +1,10 @@
+{
+	"tabWidth": 4,
+	"useTabs": true,
+	"prettier/prettier": [
+		"error",
+		{
+			"endOfLine": "auto"
+		}
+	]
+}
