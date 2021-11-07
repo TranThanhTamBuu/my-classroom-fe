@@ -1,11 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Suspense } from "react";
-import { Route } from "react-router";
+import { Route, useHistory } from "react-router";
+import { useSelector } from "react-redux";
 
 import CircularProgress from "@mui/material/CircularProgress";
 import { AppLayout } from "layouts";
 
-function GuestRoute({ path, exact, component: Component }) {
+function AuthRoute({ path, exact, component: Component }) {
+	const history = useHistory();
+	const user = useSelector((state) => state.user);
+
+	useEffect(() => {
+		if (!user) {
+			history.push("/");
+		}
+	}, []);
+
+	if (!user) return null;
+
 	return (
 		<Route path={path} exact={exact}>
 			<Suspense fallback={<CircularProgress />}>
@@ -17,4 +29,4 @@ function GuestRoute({ path, exact, component: Component }) {
 	);
 }
 
-export default GuestRoute;
+export default AuthRoute;

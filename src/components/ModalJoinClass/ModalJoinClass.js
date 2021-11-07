@@ -10,14 +10,14 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 
 let schema = yup.object().shape({
 	classCode: yup.string().trim().required(),
 });
 
 export default function ModalJoinClass({ open, onClose }) {
-	const dispatch = useDispatch();
+	// const dispatch = useDispatch();
 
 	const {
 		register,
@@ -29,7 +29,10 @@ export default function ModalJoinClass({ open, onClose }) {
 	});
 
 	const onSubmit = async (data) => {
-		
+		console.log(
+			"🚀 ~ file: ModalJoinClass.js ~ line 32 ~ onSubmit ~ data",
+			data
+		);
 		onClose();
 	};
 
