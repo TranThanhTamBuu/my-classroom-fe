@@ -11,21 +11,35 @@ import AppsIcon from "@mui/icons-material/Apps";
 import Popper from "@mui/core/Popper";
 import Grow from "@mui/material/Grow";
 import Paper from "@mui/material/Paper";
+import Tooltip from "@mui/material/Tooltip";
 import { useToggle } from "react-use";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import { ModalCreateClass, ModalJoinClass } from "components";
+import { useSelector, useDispatch } from "react-redux";
+import { signOut } from "actions/user.action";
+import { useHistory } from "react-router-dom";
 
 export default function MyAppBar({ openDrawer }) {
 	const [addAnchorEl, setAddAnchorEl] = useState(false);
 	const [addPopper, toggleAddPopper] = useToggle(false);
+	const [avatarAnchorEl, setAvatarAnchorEl] = useState(false);
+	const [avatarPopper, toggleAvatarPopper] = useToggle(false);
 	const [modalCreateClass, toggleModalCreateClass] = useToggle(false);
 	const [modalJoinClass, toggleModalJoinClass] = useToggle(false);
+	const user = useSelector((state) => state.user);
+	const dispatch = useDispatch();
+	const history = useHistory();
 
 	const handleClickAdd = (e) => {
 		setAddAnchorEl(e.currentTarget);
 		toggleAddPopper(true);
+	};
+
+	const handleClickAvatar = (e) => {
+		setAvatarAnchorEl(e.currentTarget);
+		toggleAvatarPopper(true);
 	};
 
 	return (
@@ -119,13 +133,75 @@ export default function MyAppBar({ openDrawer }) {
 						>
 							<AppsIcon />
 						</IconButton>
-						<IconButton
-							size="large"
-							color="inherit"
-							aria-label="account"
-						>
-							<Avatar />
-						</IconButton>
+						<div>
+							<Tooltip
+								title={
+									<React.Fragment>
+										<Typography
+											color="inherit"
+											sx={{ fontWeight: "bold" }}
+										>
+											{user.name}
+										</Typography>
+										<Typography color="pink">
+											{user.email}
+										</Typography>
+									</React.Fragment>
+								}
+							>
+								<IconButton
+									size="large"
+									color="inherit"
+									aria-label="account"
+									onClick={handleClickAvatar}
+								>
+									<Avatar src={user.photo} />
+								</IconButton>
+							</Tooltip>
+							<Popper
+								open={avatarPopper}
+								anchorEl={avatarAnchorEl}
+								placement="bottom-end"
+								disablePortal
+								transition
+							>
+								{({ TransitionProps }) => (
+									<Grow
+										{...TransitionProps}
+										style={{
+											transformOrigin: "right top",
+										}}
+									>
+										<Paper
+											sx={{ width: "192px", zIndex: 1 }}
+										>
+											<ClickAwayListener
+												onClickAway={() =>
+													toggleAvatarPopper(false)
+												}
+											>
+												<MenuList
+													id="composition-menu"
+													aria-labelledby="composition-button"
+												>
+													<MenuItem
+														onClick={() => {
+															toggleAvatarPopper(
+																false
+															);
+															dispatch(signOut());
+															history.push("/");
+														}}
+													>
+														Sign out
+													</MenuItem>
+												</MenuList>
+											</ClickAwayListener>
+										</Paper>
+									</Grow>
+								)}
+							</Popper>
+						</div>
 					</Toolbar>
 				</AppBar>
 			</Box>

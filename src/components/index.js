@@ -5,3 +5,7 @@ export { default as Class } from "./Class";
 export { MyTooltip } from "./MyTooltip";
 export { default as ModalCreateClass } from "./ModalCreateClass";
 export { default as ModalJoinClass } from "./ModalJoinClass";
+export { default as ModalSignUp } from "./ModalSignUp";
+export { default as ModalSignIn } from "./ModalSignIn";
+export { InstructionText } from "./InstructionText";
+export { HyperlinkText } from "./HyperlinkText";

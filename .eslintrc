@@ -14,5 +14,9 @@
 		"indent": "off",
 		"prettier/prettier": [2, { "useTabs": true }],
 		"react/prop-types": 0
+	},
+	"globals": {
+		"process": true,
+		"localStorage": true
 	}
 }
