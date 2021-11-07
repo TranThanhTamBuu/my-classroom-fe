@@ -15,12 +15,13 @@ import { useToggle } from "react-use";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
-import { ModalCreateClass } from "components";
+import { ModalCreateClass, ModalJoinClass } from "components";
 
 export default function MyAppBar({ openDrawer }) {
 	const [addAnchorEl, setAddAnchorEl] = useState(false);
 	const [addPopper, toggleAddPopper] = useToggle(false);
 	const [modalCreateClass, toggleModalCreateClass] = useToggle(false);
+	const [modalJoinClass, toggleModalJoinClass] = useToggle(false);
 
 	const handleClickAdd = (e) => {
 		setAddAnchorEl(e.currentTarget);
@@ -80,7 +81,16 @@ export default function MyAppBar({ openDrawer }) {
 													id="composition-menu"
 													aria-labelledby="composition-button"
 												>
-													<MenuItem>
+													<MenuItem
+														onClick={() => {
+															toggleAddPopper(
+																false
+															);
+															toggleModalJoinClass(
+																true
+															);
+														}}
+													>
 														Enroll class
 													</MenuItem>
 													<MenuItem
@@ -122,6 +132,10 @@ export default function MyAppBar({ openDrawer }) {
 			<ModalCreateClass
 				open={modalCreateClass}
 				onClose={() => toggleModalCreateClass(false)}
+			/>
+			<ModalJoinClass
+				open={modalJoinClass}
+				onClose={() => toggleModalJoinClass(false)}
 			/>
 		</>
 	);

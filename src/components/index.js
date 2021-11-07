@@ -4,3 +4,4 @@ export { default as MyDrawer } from "./MyDrawer";
 export { default as Class } from "./Class";
 export { MyTooltip } from "./MyTooltip";
 export { default as ModalCreateClass } from "./ModalCreateClass";
+export { default as ModalJoinClass } from "./ModalJoinClass";
