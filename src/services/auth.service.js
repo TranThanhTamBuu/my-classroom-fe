@@ -24,9 +24,18 @@ const signUp = async (data) => {
 		return error.response.data;
 	}
 };
+const editProfile = async (data) => {
+	try {
+		const res = await rest.post(URL + "/profile", data);
+		return res.data;
+	} catch (error) {
+		return error.response.data;
+	}
+};
 
 export default {
 	getCurrentUser,
 	signIn,
 	signUp,
+	editProfile,
 };

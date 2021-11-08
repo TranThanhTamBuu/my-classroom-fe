@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { indigo } from "@mui/material/colors";
+import { Link as L } from "react-router-dom";
 
 export const TitleContainer = styled.div`
 	display: flex;
@@ -22,4 +23,18 @@ export const MyContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+`;
+export const Link = styled(L)`
+	color: white;
+	white-space: nowrap;
+	width: "90%",
+
+	:hover {
+		color: white;
+		textDecoration: "underline",
+		cursor: "pointer",
+	}
+	:visited {
+		color: white;
+	}
 `;

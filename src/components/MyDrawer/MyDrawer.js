@@ -10,9 +10,11 @@ import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Box from "@mui/material/Box";
+import { RouteUrl } from "constants/router";
+import { useHistory } from "react-router";
 
 const listItemsBeforeDivider = [
-	{ title: "Classes", icon: HomeIcon },
+	{ title: "Classes", icon: HomeIcon, url: RouteUrl.MY_CLASSES },
 	{ title: "Calendar", icon: CalendarTodayIcon },
 ];
 
@@ -22,8 +24,17 @@ const listItemsAfterDivider = [
 ];
 
 export default function MyDrawer({ open, onClose }) {
-	const renderItem = ({ title, icon: Icon }) => (
-		<ListItem button key={title} onClick={() => console.log(title)}>
+	const history = useHistory();
+	const renderItem = ({ title, icon: Icon, url }) => (
+		<ListItem
+			button
+			key={title}
+			onClick={() => {
+				if (url) {
+					history.push(url);
+				}
+			}}
+		>
 			<ListItemIcon>
 				<Icon />
 			</ListItemIcon>
