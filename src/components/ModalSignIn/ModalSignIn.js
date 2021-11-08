@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as Styled from "./ModalSignIn.styled";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -15,11 +15,17 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "services/auth.service";
 import { useDispatch } from "react-redux";
 import { initUser } from "actions/user.action";
+import { popupCenter } from "utils/popup.utils";
 
 export default function ModalSignUp() {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const [serverError, setServerError] = useState("");
+	const [reload, setReload] = useState(false);
+
+	useEffect(() => {
+		if (reload) window.location.reload();
+	}, [reload]);
 
 	const validationSchema = yup.object().shape({
 		email: yup
@@ -64,6 +70,50 @@ export default function ModalSignUp() {
 		}
 	};
 
+	const handleThirdPartyResponse = async (popupWindow) => {
+		let timer = null;
+		if (popupWindow) {
+			// eslint-disable-next-line no-undef
+			timer = setInterval(() => {
+				if (popupWindow.closed) {
+					// eslint-disable-next-line no-undef
+					timer && clearInterval(timer);
+					if (localStorage.getItem(LOCAL_STORAGE_KEY.STATUS_CODE))
+						setServerError(
+							AUTH_VALIDATION.ERROR_THIRD_PARTY_CREDENTIAL
+						);
+					else if (
+						localStorage.getItem(LOCAL_STORAGE_KEY.ACCESS_TOKEN)
+					) {
+						setReload(true);
+					}
+				}
+			}, 500);
+		}
+	};
+
+	const handleGoogleLogin = async () => {
+		const googleLoginURL = `${process.env.REACT_APP_BE_URL}/auth/google`;
+		const loginWithGoogleWindows = popupCenter({
+			url: googleLoginURL,
+			w: 500,
+			h: 600,
+		});
+
+		await handleThirdPartyResponse(loginWithGoogleWindows);
+	};
+
+	const handleMicrosoftLogin = async () => {
+		const microsoftLoginURL = `${process.env.REACT_APP_BE_URL}/auth/microsoft`;
+		const loginWithMicrosoftWindows = popupCenter({
+			url: microsoftLoginURL,
+			w: 500,
+			h: 600,
+		});
+
+		await handleThirdPartyResponse(loginWithMicrosoftWindows);
+	};
+
 	return (
 		<>
 			<Styled.InstructionContainer>
@@ -79,6 +129,7 @@ export default function ModalSignUp() {
 				</Alert>
 			)}
 			<Button
+				onClick={handleGoogleLogin}
 				startIcon={
 					<img
 						src={process.env.PUBLIC_URL + "/icon/google.svg"}
@@ -96,6 +147,7 @@ export default function ModalSignUp() {
 				Sign In with Google
 			</Button>
 			<Button
+				onClick={handleMicrosoftLogin}
 				startIcon={
 					<img
 						src={process.env.PUBLIC_URL + "/icon/microsoft.svg"}
