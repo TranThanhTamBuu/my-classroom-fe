@@ -6,4 +6,8 @@ export const GuestConfig = [
 		component: lazy(() => import("screens/Authentication")),
 		path: RouteUrl.AUTHENTICATION,
 	},
+	{
+		component: lazy(() => import("screens/OAuth")),
+		path: RouteUrl.OAUTH,
+	},
 ];

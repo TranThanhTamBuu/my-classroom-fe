@@ -17,6 +17,8 @@
 	},
 	"globals": {
 		"process": true,
-		"localStorage": true
+		"localStorage": true,
+		"window": true,
+		"document": true
 	}
 }
