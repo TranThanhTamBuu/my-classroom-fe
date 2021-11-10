@@ -6,6 +6,10 @@ const getClasses = async () => {
 	const res = await rest.get(URL);
 	return res.data;
 };
+const getDetailClass = async (id) => {
+	const res = await rest.get(URL + `/${id}`);
+	return res.data;
+};
 
 const createClass = async ({ name, section, room, subject }) => {
 	const res = await rest.post(URL, { name, section, room, subject });
@@ -15,4 +19,5 @@ const createClass = async ({ name, section, room, subject }) => {
 export default {
 	getClasses,
 	createClass,
+	getDetailClass,
 };

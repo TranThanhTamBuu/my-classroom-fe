@@ -12,9 +12,10 @@ import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import Divider from "@mui/material/Divider";
 import Box from "@mui/system/Box";
 import { MyTooltip } from "components";
+import { RouteUrl } from "constants/router";
 
 export default function Class({ item }) {
-	const { name, teacher } = item;
+	const { name, teacher,_id } = item;
 	return (
 		<Card
 			variant="outlined"
@@ -27,20 +28,9 @@ export default function Class({ item }) {
 			<Styled.HeaderWrapper>
 				<Styled.MyContainer>
 					<Styled.TitleContainer>
-						<Typography
-							color="white"
-							noWrap
-							variant="h6"
-							sx={{
-								width: "90%",
-								":hover": {
-									textDecoration: "underline",
-									cursor: "pointer",
-								},
-							}}
-						>
+					<Styled.Link to={RouteUrl.CLASS + `/${_id}`}>
 							{name}
-						</Typography>
+						</Styled.Link>
 						<IconButton
 							size="medium"
 							sx={{

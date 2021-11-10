@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -19,7 +19,9 @@ import MenuList from "@mui/material/MenuList";
 import { ModalCreateClass, ModalJoinClass } from "components";
 import { useSelector, useDispatch } from "react-redux";
 import { signOut } from "actions/user.action";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import { RouteUrl } from "constants/router";
+import ClassesService from "services/classes.service";
 
 export default function MyAppBar({ openDrawer }) {
 	const [addAnchorEl, setAddAnchorEl] = useState(false);
@@ -31,6 +33,19 @@ export default function MyAppBar({ openDrawer }) {
 	const user = useSelector((state) => state.user);
 	const dispatch = useDispatch();
 	const history = useHistory();
+	const [title, setTitle] = useState("MyClassRoom");
+	let { id } = useParams();
+
+	useEffect(() => {
+		async function getDetailClass() {
+			let data = await ClassesService.getDetailClass(id);
+			setTitle(data.name);
+		}
+		if (history.location.pathname === "/classes") setTitle("MyClassRoom");
+		else if (history.location.pathname.includes("/class")) {
+			getDetailClass();
+		}
+	}, [history.location.pathname]);
 
 	const handleClickAdd = (e) => {
 		setAddAnchorEl(e.currentTarget);
@@ -58,7 +73,7 @@ export default function MyAppBar({ openDrawer }) {
 							<MenuIcon />
 						</IconButton>
 						<Typography variant="h6" sx={{ flexGrow: 1 }}>
-							My Classroom
+							{title}
 						</Typography>
 						<div>
 							<IconButton
@@ -184,6 +199,18 @@ export default function MyAppBar({ openDrawer }) {
 													id="composition-menu"
 													aria-labelledby="composition-button"
 												>
+													<MenuItem
+														onClick={() => {
+															toggleAvatarPopper(
+																false
+															);
+															history.push(
+																RouteUrl.SETTING
+															);
+														}}
+													>
+														Setting
+													</MenuItem>
 													<MenuItem
 														onClick={() => {
 															toggleAvatarPopper(
