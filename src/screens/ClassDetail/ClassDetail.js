@@ -33,7 +33,6 @@ const SnackbarAlert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
 
@@ -74,7 +73,6 @@ export default function ClassDetail() {
 		room: "",
 		teachers: [],
 		students: [],
-
 	});
 	const { id } = useParams();
 
@@ -206,7 +204,7 @@ export default function ClassDetail() {
 						{classDetail.teachers.map(({ name, _id }) => (
 							<ListItem button key={_id} divider>
 								<ListItemAvatar>
-									<Avatar alt={name} />
+									<Avatar {...stringAvatar(name)} />{" "}
 								</ListItemAvatar>
 								<ListItemText primary={name} />
 							</ListItem>
@@ -227,7 +225,7 @@ export default function ClassDetail() {
 						{classDetail.students.map(({ name, _id }) => (
 							<ListItem button key={_id} divider>
 								<ListItemAvatar>
-									<Avatar alt={name} />
+									<Avatar {...stringAvatar(name)} />
 								</ListItemAvatar>
 								<ListItemText primary={name} />
 							</ListItem>
@@ -292,4 +290,33 @@ export default function ClassDetail() {
 			</Snackbar>
 		</>
 	);
+}
+function stringToColor(string) {
+	let hash = 0;
+	let i;
+
+	/* eslint-disable no-bitwise */
+	for (i = 0; i < string.length; i += 1) {
+		hash = string.charCodeAt(i) + ((hash << 5) - hash);
+	}
+
+	let color = "#";
+
+	for (i = 0; i < 3; i += 1) {
+		const value = (hash >> (i * 8)) & 0xff;
+		color += `00${value.toString(16)}`.substr(-2);
+	}
+	/* eslint-enable no-bitwise */
+
+	return color;
+}
+
+function stringAvatar(name) {
+	let word = name.split(" ");
+	return {
+		sx: {
+			bgcolor: stringToColor(name),
+		},
+		children: `${word[0][0]}${word[word.length-1][0]}`,
+	};
 }
