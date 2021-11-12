@@ -18,6 +18,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import ClassesService from "services/classes.service";
 
+
 let schema = yup.object().shape({
 	email: yup
 		.string()

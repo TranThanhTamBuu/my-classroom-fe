@@ -33,6 +33,7 @@ const SnackbarAlert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
 
@@ -73,6 +74,7 @@ export default function ClassDetail() {
 		room: "",
 		teachers: [],
 		students: [],
+
 	});
 	const { id } = useParams();
 
