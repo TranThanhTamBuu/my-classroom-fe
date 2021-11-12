@@ -21,7 +21,6 @@ import { initUser } from "actions/user.action";
 const SnackbarAlert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
-
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
 
@@ -65,13 +64,11 @@ export default function Setting() {
 	const dispatch = useDispatch();
 	const user = useSelector((state) => state.user);
 	const [tabIndex, setTabIndex] = useState(0);
-	const [open, setOpen] = React.useState(false);
-	const [serverError, setServerError] = useState("");
-
+	const [isSucessAlertOpen, setSucessAlert] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
 	const handleChange = (event, newValue) => {
 		setTabIndex(newValue);
 	};
-
 	const editProfileSchema = yup.object().shape({
 		name: yup
 			.string()
@@ -135,191 +132,182 @@ export default function Setting() {
 	});
 
 	const onSubmit = async (data) => {
-		const response = await AuthService.editProfile(data);
+		var response = await AuthService.editProfile(data);
 		if (response.statusCode) {
-			setServerError(
-				response.statusCode === AUTH_VALIDATION.CODE_UNAUTHORIZED
-					? AUTH_VALIDATION.ERROR_SIGN_IN_FAILED
+			setErrorMessage(
+				response.statusCode === AUTH_VALIDATION.CODE_CONFLICT
+					? response.message
 					: AUTH_VALIDATION.INTERNAL_ERROR
 			);
 		} else {
-			setOpen(true);
+			setSucessAlert(true);
 			dispatch(initUser());
 		}
 	};
 
 	return (
-		<>
-			<Box
-				sx={{
-					bgcolor: "background.paper",
-					display: "flex",
-					height: "80vh",
-				}}
+		<Box
+			sx={{
+				bgcolor: "background.paper",
+				display: "flex",
+				height: "80vh",
+			}}
+		>
+			<Tabs
+				orientation="vertical"
+				value={tabIndex}
+				onChange={handleChange}
+				aria-label="Vertical tabs example"
+				sx={{ borderRight: 1, borderColor: "divider" }}
 			>
-				<Tabs
-					orientation="vertical"
-					value={tabIndex}
-					onChange={handleChange}
-					aria-label="Vertical tabs example"
-					sx={{ borderRight: 1, borderColor: "divider" }}
-				>
-					<Tab label="User Info" {...a11yProps(0)} />
-					<Tab label="Change Password" {...a11yProps(1)} />
-				</Tabs>
-				<TabPanel value={tabIndex} index={0}>
-					<Typography variant="h4" align="center">
-						Profiles
-					</Typography>
-					<Typography variant="h5" align="center">
-						Add information about yourself
-					</Typography>
-					<form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-						{user.studentId && (
-							<TextField
-								margin="normal"
-								id="studentId"
-								label="Student ID"
-								type="text"
-								fullWidth
-								variant="outlined"
-								{...register("studentId")}
-								helperText={errors.studentId?.message}
-								error={errors.studentId?.message ? true : false}
-							/>
-						)}
+				<Tab label="User Info" {...a11yProps(0)} />
+				<Tab label="Change Password" {...a11yProps(1)} />
+			</Tabs>
+			<TabPanel value={tabIndex} index={0}>
+				<Typography variant="h4" align="center">
+					Profiles
+				</Typography>
+				<Typography variant="h5" align="center">
+					Add information about yourself
+				</Typography>
+				<form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+					{user.studentId && (
 						<TextField
 							margin="normal"
-							id="name"
-							label="Full Name"
+							id="studentId"
+							label="Student ID"
 							type="text"
 							fullWidth
 							variant="outlined"
-							{...register("name")}
-							helperText={errors.name?.message}
-							error={errors.name?.message ? true : false}
+							{...register("studentId")}
+							helperText={errors.studentId?.message}
+							error={errors.studentId?.message ? true : false}
 						/>
-						<Box sx={{ flexGrow: 3 }} />
-						<LoadingButton
-							color="primary"
-							type="submit"
-							loadingPosition="center"
-							loading={isSubmitting}
-							disabled={!isValid}
-							variant="contained"
-							size="large"
-							sx={{
-								width: "20%",
-								mt: 5,
-							}}
-						>
-							<Typography
-								variant="h6"
-								sx={{ fontWeight: "bold" }}
-							>
-								Save
-							</Typography>
-						</LoadingButton>
-					</form>
-					<Box sx={{ flexGrow: 1 }} />
-				</TabPanel>
-				<TabPanel value={tabIndex} index={1}>
-					<Typography variant="h4" align="center">
-						Change password
-					</Typography>
-					<form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-						<TextField
-							margin="normal"
-							id="oldPassword"
-							label="Old Password"
-							type="password"
-							fullWidth
-							variant="outlined"
-							{...register("oldPassword")}
-							helperText={errors.oldPassword?.message}
-							error={errors.oldPassword?.message ? true : false}
-						/>
-						<TextField
-							margin="normal"
-							id="newPassword"
-							label="New Password"
-							type="password"
-							fullWidth
-							variant="outlined"
-							{...register("newPassword")}
-							helperText={errors.newPassword?.message}
-							error={errors.newPassword?.message ? true : false}
-						/>
-						<TextField
-							margin="normal"
-							id="confirmPassword"
-							label="Confirm Password"
-							type="password"
-							fullWidth
-							variant="outlined"
-							{...register("Password")}
-							helperText={errors.confirmPassword?.message}
-							error={
-								errors.confirmPassword?.message ? true : false
-							}
-						/>
-						<Box sx={{ flexGrow: 3 }} />
-						<LoadingButton
-							color="primary"
-							loadingPosition="center"
-							variant="contained"
-							loading={isSubmitting}
-							disabled={!isValid}
-							size="large"
-							sx={{
-								width: "20%",
-								mt: 5,
-							}}
-						>
-							<Typography
-								variant="h6"
-								sx={{ fontWeight: "bold" }}
-							>
-								Save
-							</Typography>
-						</LoadingButton>
-					</form>
-				</TabPanel>
-			</Box>
+					)}
+					<TextField
+						margin="normal"
+						id="name"
+						label="Full Name"
+						type="text"
+						fullWidth
+						variant="outlined"
+						{...register("name")}
+						helperText={errors.name?.message}
+						error={errors.name?.message ? true : false}
+					/>
+					<Box sx={{ flexGrow: 3 }} />
+					<LoadingButton
+						color="primary"
+						type="submit"
+						loadingPosition="center"
+						loading={isSubmitting}
+						disabled={!isValid}
+						variant="contained"
+						size="large"
+						sx={{
+							width: "20%",
+							mt: 5,
+						}}
+					>
+						<Typography variant="h6" sx={{ fontWeight: "bold" }}>
+							Save
+						</Typography>
+					</LoadingButton>
+				</form>
+				<Box sx={{ flexGrow: 1 }} />
+			</TabPanel>
+			<TabPanel value={tabIndex} index={1}>
+				<Typography variant="h4" align="center">
+					Change password
+				</Typography>
+				<form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+					<TextField
+						margin="normal"
+						id="oldPassword"
+						label="Old Password"
+						type="password"
+						fullWidth
+						variant="outlined"
+						{...register("oldPassword")}
+						helperText={errors.oldPassword?.message}
+						error={errors.oldPassword?.message ? true : false}
+					/>
+					<TextField
+						margin="normal"
+						id="newPassword"
+						label="New Password"
+						type="password"
+						fullWidth
+						variant="outlined"
+						{...register("newPassword")}
+						helperText={errors.newPassword?.message}
+						error={errors.newPassword?.message ? true : false}
+					/>
+					<TextField
+						margin="normal"
+						id="confirmPassword"
+						label="Confirm Password"
+						type="password"
+						fullWidth
+						variant="outlined"
+						{...register("Password")}
+						helperText={errors.confirmPassword?.message}
+						error={errors.confirmPassword?.message ? true : false}
+					/>
+					<Box sx={{ flexGrow: 3 }} />
+					<LoadingButton
+						color="primary"
+						type="submit"
+						loadingPosition="center"
+						variant="contained"
+						loading={isSubmitting}
+						disabled={!isValid}
+						size="large"
+						sx={{
+							width: "20%",
+							mt: 5,
+						}}
+					>
+						<Typography variant="h6" sx={{ fontWeight: "bold" }}>
+							Save
+						</Typography>
+					</LoadingButton>
+				</form>
+			</TabPanel>
 			<Snackbar
-				open={open}
+				open={isSucessAlertOpen}
 				autoHideDuration={6000}
 				onClose={() => {
-					setOpen(false);
+					setSucessAlert(false);
 				}}
 			>
 				<SnackbarAlert
 					onClose={() => {
-						setOpen(false);
+						setSucessAlert(false);
 					}}
 					severity="success"
 					sx={{ width: "100%" }}
 				>
-					Edit profile success
+					Edit Profile Success
 				</SnackbarAlert>
 			</Snackbar>
 			<Snackbar
-				open={serverError}
+				open={errorMessage}
 				autoHideDuration={6000}
 				onClose={() => {
-					setServerError("");
+					setErrorMessage("");
 				}}
 			>
 				<SnackbarAlert
 					onClose={() => {
-						setServerError("");
+						setErrorMessage("");
 					}}
 					severity="error"
 					sx={{ width: "100%" }}
 				>
-					{serverError}
+					{errorMessage}
 				</SnackbarAlert>
 			</Snackbar>
-		</>
+		</Box>
 	);
 }
