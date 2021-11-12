@@ -26,6 +26,13 @@ import ClickAwayListener from "@mui/material/ClickAwayListener";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import { ModalInvite } from "components";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+
+const SnackbarAlert = React.forwardRef(function Alert(props, ref) {
+	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
@@ -54,16 +61,20 @@ function TabPanel(props) {
 }
 
 export default function ClassDetail() {
-	const [value, setValue] = useState(0);
+	const [tabIndex, setTabIndex] = useState(0);
+	const [inviteLink, setInviteLink] = useState("");
+	const [openError, setOpenErrorModal] = useState(false);
 	const [addAnchorEl, setAddAnchorEl] = useState(false);
 	const [addPopper, toggleAddPopper] = useToggle(false);
 	const [modalInvite, toggleModalInvite] = useToggle(false);
-
 	const [classDetail, setClassDetail] = useState({
 		name: "",
 		subjec: "",
 		section: "",
 		room: "",
+		teachers: [],
+		students: [],
+
 	});
 	const { id } = useParams();
 
@@ -83,7 +94,7 @@ export default function ClassDetail() {
 	return (
 		<>
 			<Box sx={{ pb: 7 }}>
-				<TabPanel value={value} index={0}>
+				<TabPanel value={tabIndex} index={0}>
 					<Accordion>
 						<Styled.MyContainer>
 							<AccordionSummary
@@ -144,9 +155,20 @@ export default function ClassDetail() {
 													aria-labelledby="composition-button"
 												>
 													<MenuItem
-														onClick={() => {
+														onClick={async () => {
 															toggleAddPopper(
 																false
+															);
+
+															let rs =
+																await ClassesService.inviteToClass(
+																	{
+																		classId:
+																			id,
+																	}
+																);
+															setInviteLink(
+																rs.link
 															);
 														}}
 													>
@@ -174,19 +196,19 @@ export default function ClassDetail() {
 						<Stack spacing={2} sx={{ flexGrow: 9 }}></Stack>
 					</Box>
 				</TabPanel>
-				<TabPanel value={value} index={1}>
+				<TabPanel value={tabIndex} index={1}>
 					2
 				</TabPanel>
-				<TabPanel value={value} index={2}>
+				<TabPanel value={tabIndex} index={2}>
 					<Typography variant="h4">Teachers</Typography>
 					<Divider />
 					<List>
-						{messageExamples.map(({ primary, person }, index) => (
-							<ListItem button key={index + person} divider>
+						{classDetail.teachers.map(({ name, _id }) => (
+							<ListItem button key={_id} divider>
 								<ListItemAvatar>
-									<Avatar alt={primary} src={person} />
+									<Avatar alt={name} />
 								</ListItemAvatar>
-								<ListItemText primary={primary} />
+								<ListItemText primary={name} />
 							</ListItem>
 						))}
 					</List>
@@ -196,16 +218,18 @@ export default function ClassDetail() {
 						sx={{ mt: 3 }}
 					>
 						<Typography variant="h4">Students</Typography>
-						<Typography variant="h6">53 Students</Typography>
+						<Typography variant="h6">
+							{classDetail.students.length + " Students"}
+						</Typography>
 					</Stack>
 					<Divider />
 					<List>
-						{messageExamples.map(({ primary, person }, index) => (
-							<ListItem button key={index + person} divider>
+						{classDetail.students.map(({ name, _id }) => (
+							<ListItem button key={_id} divider>
 								<ListItemAvatar>
-									<Avatar alt={primary} src={person} />
+									<Avatar alt={name} />
 								</ListItemAvatar>
-								<ListItemText primary={primary} />
+								<ListItemText primary={name} />
 							</ListItem>
 						))}
 					</List>
@@ -216,9 +240,9 @@ export default function ClassDetail() {
 				>
 					<BottomNavigation
 						showLabels
-						value={value}
+						value={tabIndex}
 						onChange={(event, newValue) => {
-							setValue(newValue);
+							setTabIndex(newValue);
 						}}
 					>
 						<BottomNavigationAction label="Detail" />
@@ -230,52 +254,42 @@ export default function ClassDetail() {
 			<ModalInvite
 				open={modalInvite}
 				onClose={() => toggleModalInvite(false)}
+				id={id}
 			/>
+			<Snackbar
+				open={inviteLink}
+				autoHideDuration={6000}
+				onClose={() => {
+					setInviteLink("");
+				}}
+			>
+				<SnackbarAlert
+					onClose={() => {
+						setInviteLink("");
+					}}
+					severity="success"
+					sx={{ width: "100%" }}
+				>
+					{inviteLink}
+				</SnackbarAlert>
+			</Snackbar>
+			<Snackbar
+				open={openError}
+				autoHideDuration={6000}
+				onClose={() => {
+					setOpenErrorModal(false);
+				}}
+			>
+				<SnackbarAlert
+					onClose={() => {
+						setOpenErrorModal(false);
+					}}
+					severity="error"
+					sx={{ width: "100%" }}
+				>
+					Oops... Something went wrong!!!!!
+				</SnackbarAlert>
+			</Snackbar>
 		</>
 	);
 }
-
-const messageExamples = [
-	{
-		primary: "Brunch this week?",
-		secondary:
-			"I'll be in the neighbourhood this week. Let's grab a bite to eat",
-		person: "/static/images/avatar/5.jpg",
-	},
-	{
-		primary: "Birthday Gift",
-		secondary: `Do you have a suggestion for a good present for John on his work
-      anniversary. I am really confused & would love your thoughts on it.`,
-		person: "/static/images/avatar/1.jpg",
-	},
-	{
-		primary: "Recipe to try",
-		secondary:
-			"I am try out this new BBQ recipe, I think this might be amazing",
-		person: "/static/images/avatar/2.jpg",
-	},
-	{
-		primary: "Yes!",
-		secondary: "I have the tickets to the ReactConf for this year.",
-		person: "/static/images/avatar/3.jpg",
-	},
-	{
-		primary: "Doctor's Appointment",
-		secondary:
-			"My appointment for the doctor was rescheduled for next Saturday.",
-		person: "/static/images/avatar/4.jpg",
-	},
-	{
-		primary: "Discussion",
-		secondary: `Menus that are generated by the bottom app bar (such as a bottom
-      navigation drawer or overflow menu) open as bottom sheets at a higher elevation
-      than the bar.`,
-		person: "/static/images/avatar/5.jpg",
-	},
-	{
-		primary: "Summer BBQ",
-		secondary: `Who wants to have a cookout this weekend? I just got some furniture
-      for my backyard and would love to fire up the grill.`,
-		person: "/static/images/avatar/1.jpg",
-	},
-];

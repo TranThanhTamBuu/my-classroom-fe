@@ -122,18 +122,20 @@ export default function MyAppBar({ openDrawer }) {
 													>
 														Enroll class
 													</MenuItem>
-													<MenuItem
-														onClick={() => {
-															toggleAddPopper(
-																false
-															);
-															toggleModalCreateClass(
-																true
-															);
-														}}
-													>
-														Create class
-													</MenuItem>
+													{!user.studentId &&
+														<MenuItem
+															onClick={() => {
+																toggleAddPopper(
+																	false
+																);
+																toggleModalCreateClass(
+																	true
+																);
+															}}
+														>
+															Create class
+														</MenuItem>
+													}
 												</MenuList>
 											</ClickAwayListener>
 										</Paper>
