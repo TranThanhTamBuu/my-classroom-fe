@@ -3,10 +3,21 @@ import Grid from "@mui/material/Grid";
 import { Class } from "components";
 import { useDispatch, useSelector } from "react-redux";
 import { setClasses } from "actions/classes.action";
+import { removeLinkId } from "actions/link.action";
+import { useHistory } from "react-router";
 
 export default function Classes() {
 	const dispatch = useDispatch();
 	const classes = useSelector((state) => state.classes);
+	const token = useSelector((state) => state.link);
+	const history = useHistory();
+
+	useEffect(() => {
+		if (token) {
+			dispatch(removeLinkId());
+			return history.go(-2);
+		}
+	}, [token]);
 
 	useEffect(() => {
 		dispatch(setClasses());

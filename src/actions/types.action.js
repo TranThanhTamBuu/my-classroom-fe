@@ -7,3 +7,8 @@ export const USER = {
 	SET: "SET_USER",
 	REMOVE: "REMOVE_USER",
 };
+
+export const LINK = {
+	SET: "SET_LINK_ID",
+	REMOVE: "REMOVE_LINK_ID",
+}

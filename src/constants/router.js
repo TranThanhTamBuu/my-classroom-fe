@@ -5,4 +5,5 @@ export const RouteUrl = {
 	CLASS_DETAIL: "/class/:id",
 	CLASS: "/class",
 	SETTING: "/setting",
+	ACCEPT_LINK: "/activate/:token",
 };
