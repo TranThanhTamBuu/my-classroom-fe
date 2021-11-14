@@ -28,6 +28,7 @@ import MenuList from "@mui/material/MenuList";
 import { ModalInvite } from "components";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const SnackbarAlert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -60,8 +61,10 @@ function TabPanel(props) {
 }
 
 export default function ClassDetail() {
+	const [loading, SetLoading] = useState(true);
 	const [tabIndex, setTabIndex] = useState(0);
 	const [inviteLink, setInviteLink] = useState("");
+	const [openCopyLinkAlert, setOpenCopyLinkAlert] = useState(false);
 	const [openError, setOpenErrorModal] = useState(false);
 	const [addAnchorEl, setAddAnchorEl] = useState(false);
 	const [addPopper, toggleAddPopper] = useToggle(false);
@@ -73,6 +76,7 @@ export default function ClassDetail() {
 		room: "",
 		teachers: [],
 		students: [],
+		createdBy: "",
 	});
 	const { id } = useParams();
 
@@ -80,16 +84,36 @@ export default function ClassDetail() {
 		async function getDetailClass() {
 			let data = await ClassesService.getDetailClass(id);
 			setClassDetail(data);
+			try {
+				let inviteLink = await ClassesService.inviteToClass({
+					classId: id,
+				});
+				setInviteLink(inviteLink.link);
+			} catch (err) {
+				console.log(err);
+			}
+			SetLoading(false);
 		}
 		getDetailClass();
 	}, []);
 
-	const handleClickAdd = (e) => {
+	const handleClickInvite = (e) => {
 		setAddAnchorEl(e.currentTarget);
 		toggleAddPopper(true);
 	};
 
-	return (
+	return loading ? (
+		<Box
+			sx={{
+				display: "flex",
+				flexDirection: "column",
+				alignItems: "center",
+				justifyContent: "center",
+			}}
+		>
+			<CircularProgress />
+		</Box>
+	) : (
 		<>
 			<Box sx={{ pb: 7 }}>
 				<TabPanel value={tabIndex} index={0}>
@@ -119,13 +143,15 @@ export default function ClassDetail() {
 					</Accordion>
 					<Box sx={{ mt: 3 }} display="flex">
 						<Stack spacing={2} sx={{ flexGrow: 1, mr: 3 }}>
-							<Button
-								variant="contained"
-								sx={{ width: "85%" }}
-								onClick={handleClickAdd}
-							>
-								Class Invitation Link
-							</Button>
+							{inviteLink && (
+								<Button
+									variant="contained"
+									sx={{ width: "85%" }}
+									onClick={handleClickInvite}
+								>
+									Class Invitation Link
+								</Button>
+							)}
 							<Popper
 								open={addPopper}
 								anchorEl={addAnchorEl}
@@ -157,16 +183,8 @@ export default function ClassDetail() {
 															toggleAddPopper(
 																false
 															);
-
-															let rs =
-																await ClassesService.inviteToClass(
-																	{
-																		classId:
-																			id,
-																	}
-																);
-															setInviteLink(
-																rs.link
+															setOpenCopyLinkAlert(
+																true
 															);
 														}}
 													>
@@ -195,7 +213,7 @@ export default function ClassDetail() {
 					</Box>
 				</TabPanel>
 				<TabPanel value={tabIndex} index={1}>
-					2
+					View Grade
 				</TabPanel>
 				<TabPanel value={tabIndex} index={2}>
 					<Typography variant="h4">Teachers</Typography>
@@ -255,15 +273,15 @@ export default function ClassDetail() {
 				id={id}
 			/>
 			<Snackbar
-				open={inviteLink}
+				open={openCopyLinkAlert}
 				autoHideDuration={6000}
 				onClose={() => {
-					setInviteLink("");
+					setOpenCopyLinkAlert(false);
 				}}
 			>
 				<SnackbarAlert
 					onClose={() => {
-						setInviteLink("");
+						setOpenCopyLinkAlert(false);
 					}}
 					severity="success"
 					sx={{ width: "100%" }}
@@ -317,6 +335,6 @@ function stringAvatar(name) {
 		sx: {
 			bgcolor: stringToColor(name),
 		},
-		children: `${word[0][0]}${word[word.length-1][0]}`,
+		children: `${word[0][0]}${word[word.length - 1][0]}`,
 	};
 }

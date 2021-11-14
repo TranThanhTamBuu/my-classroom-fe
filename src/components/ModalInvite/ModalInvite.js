@@ -18,7 +18,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import ClassesService from "services/classes.service";
 
-
 let schema = yup.object().shape({
 	email: yup
 		.string()
@@ -56,7 +55,8 @@ export default function ModalInvite({ open, onClose, id }) {
 			classId: id,
 			inviteEmail: listEmail.length > 0 ? listEmail : undefined,
 		};
-		 await ClassesService.inviteToClass(body);
+		await ClassesService.inviteToClass(body);
+		onClose();
 	};
 	return (
 		<Dialog open={open} onClose={onClose} fullWidth={true} maxWidth={"sm"}>
