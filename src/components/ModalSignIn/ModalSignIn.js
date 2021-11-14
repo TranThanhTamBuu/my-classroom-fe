@@ -16,12 +16,15 @@ import AuthService from "services/auth.service";
 import { useDispatch } from "react-redux";
 import { initUser } from "actions/user.action";
 import { popupCenter } from "utils/popup.utils";
+import Cookies from "universal-cookie";
+import { AUTHENTICATION } from "actions/types.action";
 
 export default function ModalSignUp() {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const [serverError, setServerError] = useState("");
 	const [reload, setReload] = useState(false);
+	const cookies = new Cookies();
 
 	useEffect(() => {
 		if (reload) window.location.reload();
@@ -78,13 +81,21 @@ export default function ModalSignUp() {
 				if (popupWindow.closed) {
 					// eslint-disable-next-line no-undef
 					timer && clearInterval(timer);
-					if (localStorage.getItem(LOCAL_STORAGE_KEY.STATUS_CODE))
+					const statusCode = cookies.get(
+						LOCAL_STORAGE_KEY.STATUS_CODE
+					);
+					const accessToken = cookies.get(
+						LOCAL_STORAGE_KEY.ACCESS_TOKEN
+					);
+					if (statusCode)
 						setServerError(
 							AUTH_VALIDATION.ERROR_THIRD_PARTY_CREDENTIAL
 						);
-					else if (
-						localStorage.getItem(LOCAL_STORAGE_KEY.ACCESS_TOKEN)
-					) {
+					else if (accessToken) {
+						localStorage.setItem(
+							LOCAL_STORAGE_KEY.ACCESS_TOKEN,
+							accessToken
+						);
 						setReload(true);
 					}
 				}
@@ -120,7 +131,13 @@ export default function ModalSignUp() {
 				<InstructionText text="Don’t have an account yet?" />
 				<HyperlinkText
 					text="Sign up"
-					onClick={() => history.push("/?tab=sign-up")}
+					onClick={() => {
+						history.push("/?tab=sign-up");
+						dispatch({
+							type: AUTHENTICATION.SET,
+							payload: "sign-up",
+						});
+					}}
 				/>
 			</Styled.InstructionContainer>
 			{serverError && (

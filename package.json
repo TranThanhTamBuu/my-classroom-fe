@@ -45,6 +45,7 @@
 		"redux-thunk": "^2.4.0",
 		"serve": "^13.0.2",
 		"styled-components": "5.3.3",
+		"universal-cookie": "^4.0.4",
 		"web-vitals": "^1.0.1",
 		"yup": "^0.32.11"
 	},

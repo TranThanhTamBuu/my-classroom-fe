@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import * as Styled from "./Authentication.styled";
 import Typography from "@mui/material/Typography";
@@ -10,25 +10,34 @@ import { useSelector } from "react-redux";
 const TAB_NAVIGATION = {
 	"sign-in": {
 		title: "Sign In",
-		component: ModalSignIn,
+		Component: ModalSignIn,
 	},
 	"sign-up": {
 		title: "Sign Up",
-		component: ModalSignUp,
+		Component: ModalSignUp,
 	},
 };
 
 export default function Authentication() {
+	const authentication = useSelector((state) => state.authentication);
+	const tab = useSearchParam("tab");
 	const history = useHistory();
 	const user = useSelector((state) => state.user);
+	const [page, setPage] = useState(
+		TAB_NAVIGATION[authentication || "sign-in"]
+	);
+
+	useEffect(() => {
+		setPage(TAB_NAVIGATION[tab || "sign-in"]);
+	}, []);
+
+	useEffect(() => {
+		setPage(TAB_NAVIGATION[authentication]);
+	}, [authentication]);
 
 	useEffect(() => {
 		if (user) return history.push("/classes");
 	}, [user]);
-
-	const tab = useSearchParam("tab");
-
-	const { title, component: Component } = TAB_NAVIGATION[tab || "sign-in"];
 
 	return (
 		<Styled.MyContainer>
@@ -47,9 +56,9 @@ export default function Authentication() {
 					sx={{ fontWeight: "bold" }}
 					gutterBottom
 				>
-					{title}
+					{page.title}
 				</Typography>
-				<Component />
+				<page.Component />
 			</Paper>
 		</Styled.MyContainer>
 	);

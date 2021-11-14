@@ -11,4 +11,8 @@ export const USER = {
 export const LINK = {
 	SET: "SET_LINK_ID",
 	REMOVE: "REMOVE_LINK_ID",
-}
+};
+
+export const AUTHENTICATION = {
+	SET: "SET_AUTHENTICATION",
+};

@@ -18,6 +18,7 @@ import AuthService from "services/auth.service";
 import { useDispatch } from "react-redux";
 import { initUser } from "actions/user.action";
 import { LOCAL_STORAGE_KEY } from "constants/localStorage";
+import { AUTHENTICATION } from "actions/types.action";
 
 export default function ModalSignUp() {
 	const [teacher, toggleTeacher] = useToggle(false);
@@ -100,7 +101,13 @@ export default function ModalSignUp() {
 				<InstructionText text="Already have an account?" />
 				<HyperlinkText
 					text="Sign in"
-					onClick={() => history.push("/?tab=sign-in")}
+					onClick={() => {
+						history.push("/?tab=sign-in");
+						dispatch({
+							type: AUTHENTICATION.SET,
+							payload: "sign-in",
+						});
+					}}
 				/>
 			</Styled.InstructionContainer>
 			{serverError && (
