@@ -25,13 +25,13 @@ const inviteToClass = async (data) => {
 const joinClass = async (data) => {
 	const res = await rest.put(JOIN_LINK_URL, data);
 	return res.data;
-}
+};
 
 const checkJoinLinkValid = async (linkId) => {
 	console.log("checkJoinLinkValid: ", linkId);
 	const res = await rest.get(CHECK_LINK_URL + `/${linkId}`);
 	return res.data;
-}
+};
 
 export default {
 	getClasses,
