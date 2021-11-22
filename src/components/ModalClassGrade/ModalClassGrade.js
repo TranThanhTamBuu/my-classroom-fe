@@ -22,7 +22,14 @@ let schema = yup.object().shape({
 		.positive("Point must be positive"),
 });
 
-export default function ModalClassGrade({ open, onClose, listAssignment, id,setListAssignment }) {
+export default function ModalClassGrade({
+	open,
+	onClose,
+	listAssignment,
+	id,
+	setListAssignment,
+	isStudent,
+}) {
 	// const dispatch = useDispatch();
 	const [listGrade, setListGrade] = useState(listAssignment);
 	const [isLoading, setLoading] = useToggle(false);
@@ -87,8 +94,13 @@ export default function ModalClassGrade({ open, onClose, listAssignment, id,setL
 		setListAssignment(listGradeCopy);
 		const data = {
 			classId: id,
-			listAssignment: listGradeCopy.map((e,index) => {
-				return { title: e.name, totalPoint: e.point,_id:e.id,position:index };
+			listAssignment: listGradeCopy.map((e, index) => {
+				return {
+					title: e.name,
+					totalPoint: e.point,
+					_id: e.id,
+					position: index,
+				};
 			}),
 		};
 		console.log(data);
@@ -96,15 +108,15 @@ export default function ModalClassGrade({ open, onClose, listAssignment, id,setL
 		setLoading(false);
 		onClose();
 	};
-	const handleOnDragEnd= (result)=> {
+	const handleOnDragEnd = (result) => {
 		if (!result.destination) return;
-	
+
 		const items = Array.from(listGrade);
 		const [reorderedItem] = items.splice(result.source.index, 1);
 		items.splice(result.destination.index, 0, reorderedItem);
-	
+
 		setListGrade(items);
-	  }
+	};
 	return (
 		<Dialog open={open} onClose={onClose} fullWidth={true} maxWidth={"md"}>
 			<DialogTitle>Join class</DialogTitle>
@@ -118,47 +130,59 @@ export default function ModalClassGrade({ open, onClose, listAssignment, id,setL
 					onClickSaveEdit={onClickSaveEdit}
 					handleOnDragEnd={handleOnDragEnd}
 				/>
-
-				<TextField
-					autoFocus
-					margin="dense"
-					id="name"
-					label="Name"
-					type="text"
-					fullWidth
-					variant="filled"
-					{...register("name")}
-					helperText={errors.name?.message}
-					error={errors.name?.message ? true : false}
-				/>
-				<TextField
-					margin="dense"
-					id="point"
-					label="Point"
-					type="number"
-					fullWidth
-					variant="filled"
-					{...register("point")}
-					helperText={errors.point?.message}
-					error={errors.point?.message ? true : false}
-				/>
+				{!isStudent && (
+					<>
+						<TextField
+							autoFocus
+							margin="dense"
+							id="name"
+							label="Name"
+							type="text"
+							fullWidth
+							variant="filled"
+							{...register("name")}
+							helperText={errors.name?.message}
+							error={errors.name?.message ? true : false}
+						/>
+						<TextField
+							margin="dense"
+							id="point"
+							label="Point"
+							type="number"
+							fullWidth
+							variant="filled"
+							{...register("point")}
+							helperText={errors.point?.message}
+							error={errors.point?.message ? true : false}
+						/>
+					</>
+				)}
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={onClose}>
-					<Typography variant="button">Cancel</Typography>
+				<Typography variant="button">
+						{isStudent ? "Close" : "Cancel"}
+					</Typography>
 				</Button>
-				<Button disabled={!isValid} onClick={onClickAdd}>
-					<Typography variant="button">Add</Typography>
-				</Button>
-				<LoadingButton
-					loading={isLoading}
-					loadingPosition="center"
-					variant="button"
-					disabled={listGrade.length === 0 || listGrade.some((e)=> e.isEditMode===true)}
-					onClick={onClickSave}
-				>
-					<Typography variant="button">Invite</Typography>
-				</LoadingButton>
+				{!isStudent && (
+					<>
+						<Button disabled={!isValid} onClick={onClickAdd}>
+							<Typography variant="button">Add</Typography>
+						</Button>
+						<LoadingButton
+							loading={isLoading}
+							loadingPosition="center"
+							variant="button"
+							disabled={
+								listGrade.length === 0 ||
+								listGrade.some((e) => e.isEditMode === true)
+							}
+							onClick={onClickSave}
+						>
+							<Typography variant="button">Invite</Typography>
+						</LoadingButton>
+					</>
+				)}
 			</DialogActions>
 		</Dialog>
 	);
