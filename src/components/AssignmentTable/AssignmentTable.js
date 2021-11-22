@@ -11,22 +11,24 @@ import AssignmentRow from "components/AssignmentRow";
 
 export default function AssignmentTable({
 	items,
-	setItem,
 	onClickDelete,
 	onClickEdit,
 	onClickCancelEdit,
 	onClickSaveEdit,
 	handleOnDragEnd,
+	isStudent,
 }) {
 	return (
 		<TableContainer component={Paper}>
 			<Table sx={{ minWidth: 200 }} aria-label="simple table">
 				<TableHead>
 					<TableRow>
-						<TableCell></TableCell>
+					{!isStudent && <TableCell></TableCell>}
 						<TableCell align="center">Name</TableCell>
 						<TableCell align="center">Point</TableCell>
-						<TableCell align="center">Action</TableCell>
+						{!isStudent && (
+							<TableCell align="center">Action</TableCell>
+						)}
 					</TableRow>
 				</TableHead>
 				<DragDropContext onDragEnd={handleOnDragEnd}>
@@ -79,6 +81,7 @@ export default function AssignmentTable({
 														onClickSaveEdit={
 															onClickSaveEdit
 														}
+														isStudent={isStudent}
 													/>
 												</TableRow>
 											);

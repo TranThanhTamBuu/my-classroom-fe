@@ -86,6 +86,7 @@ export default function AssignmentRow({
 	draggableProvided,
 	onClickCancelEdit,
 	onClickSaveEdit,
+	isStudent,
 }) {
 	const [name, setName] = useState(item.name);
 	const handleNameChange = (event) => {
@@ -106,13 +107,15 @@ export default function AssignmentRow({
 
 	return (
 		<>
-			<ActionCell
-				isEditMode={item.isEditMode}
-				draggableProvided={draggableProvided}
-				isValid={name.length > 0 && point > 0}
-				onClickCancelEdit={handleRevertEdit}
-				onClickSaveEdit={handleSaveEdit}
-			/>
+			{!isStudent && (
+				<ActionCell
+					isEditMode={item.isEditMode}
+					draggableProvided={draggableProvided}
+					isValid={name.length > 0 && point > 0}
+					onClickCancelEdit={handleRevertEdit}
+					onClickSaveEdit={handleSaveEdit}
+				/>
+			)}
 			<NameCell
 				name={name}
 				handleChange={handleNameChange}
@@ -123,23 +126,25 @@ export default function AssignmentRow({
 				handleChange={handlePointChange}
 				isEditMode={item.isEditMode}
 			/>
-			<TableCell align="center">
-				<IconButton
-					edge="end"
-					aria-label="edit"
-					onClick={onClickEdit}
-					{...(item.isEditMode && { disabled: true })}
-				>
-					<EditIcon />
-				</IconButton>
-				<IconButton
-					edge="end"
-					aria-label="delete"
-					onClick={onClickDelete}
-				>
-					<DeleteIcon />
-				</IconButton>
-			</TableCell>
+			{!isStudent && (
+				<TableCell align="center">
+					<IconButton
+						edge="end"
+						aria-label="edit"
+						onClick={onClickEdit}
+						{...(item.isEditMode && { disabled: true })}
+					>
+						<EditIcon />
+					</IconButton>
+					<IconButton
+						edge="end"
+						aria-label="delete"
+						onClick={onClickDelete}
+					>
+						<DeleteIcon />
+					</IconButton>
+				</TableCell>
+			)}
 		</>
 	);
 }

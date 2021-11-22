@@ -29,6 +29,7 @@ import { ModalClassGrade, ModalInvite } from "components";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useSelector } from "react-redux";
 
 const SnackbarAlert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -71,6 +72,7 @@ export default function ClassDetail() {
 	const [modalInvite, toggleModalInvite] = useToggle(false);
 	const [modalClassGrade, toggleModalClassGrade] = useToggle(false);
 	const [listAssignment, setListAssignment] = useState([]);
+	const user = useSelector((state) => state.user);
 	const [classDetail, setClassDetail] = useState({
 		name: "",
 		subjec: "",
@@ -88,7 +90,11 @@ export default function ClassDetail() {
 			setClassDetail(data);
 			let listAssignment = await ClassesService.getAllAssignments(id);
 			console.log(listAssignment);
-			listAssignment = listAssignment.sort((a,b)=> a.position-b.position).map((e)=>{return {name:e.title,point:e.totalPoint,id:e._id}});
+			listAssignment = listAssignment
+				.sort((a, b) => a.position - b.position)
+				.map((e) => {
+					return { name: e.title, point: e.totalPoint, id: e._id };
+				});
 			setListAssignment(listAssignment);
 			try {
 				let inviteLink = await ClassesService.inviteToClass({
@@ -290,6 +296,7 @@ export default function ClassDetail() {
 				id={id}
 			/>
 			<ModalClassGrade
+				isStudent={user.studentId.length > 0}
 				open={modalClassGrade}
 				onClose={() => toggleModalClassGrade(false)}
 				listAssignment={listAssignment}
