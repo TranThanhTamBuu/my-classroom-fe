@@ -86,6 +86,7 @@ export default function AssignmentRow({
 	draggableProvided,
 	onClickCancelEdit,
 	onClickSaveEdit,
+	isStudent
 }) {
 	const [name, setName] = useState(item.name);
 	const handleNameChange = (event) => {
@@ -106,13 +107,13 @@ export default function AssignmentRow({
 
 	return (
 		<>
-			<ActionCell
+			{!isStudent &&<ActionCell
 				isEditMode={item.isEditMode}
 				draggableProvided={draggableProvided}
 				isValid={name.length > 0 && point > 0}
 				onClickCancelEdit={handleRevertEdit}
 				onClickSaveEdit={handleSaveEdit}
-			/>
+			/>}
 			<NameCell
 				name={name}
 				handleChange={handleNameChange}
@@ -123,7 +124,7 @@ export default function AssignmentRow({
 				handleChange={handlePointChange}
 				isEditMode={item.isEditMode}
 			/>
-			<TableCell align="center">
+			{!isStudent &&<TableCell align="center">
 				<IconButton
 					edge="end"
 					aria-label="edit"
@@ -139,7 +140,7 @@ export default function AssignmentRow({
 				>
 					<DeleteIcon />
 				</IconButton>
-			</TableCell>
+			</TableCell>}
 		</>
 	);
 }
