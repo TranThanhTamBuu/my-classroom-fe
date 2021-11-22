@@ -129,6 +129,7 @@ export default function ModalClassGrade({
 					onClickCancelEdit={onClickCancelEdit}
 					onClickSaveEdit={onClickSaveEdit}
 					handleOnDragEnd={handleOnDragEnd}
+					isStudent={isStudent}
 				/>
 				{!isStudent && (
 					<>
