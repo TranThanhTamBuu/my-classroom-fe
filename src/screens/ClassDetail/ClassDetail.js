@@ -25,7 +25,7 @@ import Grow from "@mui/material/Grow";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
-import { ModalInvite } from "components";
+import { ModalClassGrade, ModalInvite } from "components";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -69,6 +69,8 @@ export default function ClassDetail() {
 	const [addAnchorEl, setAddAnchorEl] = useState(false);
 	const [addPopper, toggleAddPopper] = useToggle(false);
 	const [modalInvite, toggleModalInvite] = useToggle(false);
+	const [modalClassGrade, toggleModalClassGrade] = useToggle(false);
+	const [listAssignment, setListAssignment] = useState([]);
 	const [classDetail, setClassDetail] = useState({
 		name: "",
 		subjec: "",
@@ -84,6 +86,10 @@ export default function ClassDetail() {
 		async function getDetailClass() {
 			let data = await ClassesService.getDetailClass(id);
 			setClassDetail(data);
+			let listAssignment = await ClassesService.getAllAssignments(id);
+			console.log(listAssignment);
+			listAssignment = listAssignment.sort((a,b)=> a.position-b.position).map((e)=>{return {name:e.title,point:e.totalPoint,id:e._id}});
+			setListAssignment(listAssignment);
 			try {
 				let inviteLink = await ClassesService.inviteToClass({
 					classId: id,
@@ -100,6 +106,9 @@ export default function ClassDetail() {
 	const handleClickInvite = (e) => {
 		setAddAnchorEl(e.currentTarget);
 		toggleAddPopper(true);
+	};
+	const handleClickClassGrade = () => {
+		toggleModalClassGrade(true);
 	};
 
 	return loading ? (
@@ -152,6 +161,14 @@ export default function ClassDetail() {
 									Class Invitation Link
 								</Button>
 							)}
+							<Button
+								variant="contained"
+								sx={{ width: "85%" }}
+								onClick={handleClickClassGrade}
+							>
+								Class Grade Structure
+							</Button>
+
 							<Popper
 								open={addPopper}
 								anchorEl={addAnchorEl}
@@ -271,6 +288,13 @@ export default function ClassDetail() {
 				open={modalInvite}
 				onClose={() => toggleModalInvite(false)}
 				id={id}
+			/>
+			<ModalClassGrade
+				open={modalClassGrade}
+				onClose={() => toggleModalClassGrade(false)}
+				listAssignment={listAssignment}
+				id={classDetail._id}
+				setListAssignment={setListAssignment}
 			/>
 			<Snackbar
 				open={openCopyLinkAlert}
