@@ -4,6 +4,7 @@ const URL = "/classes";
 const LINK_URL = "/link";
 const JOIN_LINK_URL = "/link/accept";
 const CHECK_LINK_URL = "/link/check";
+const ASSIGNMENT_LINK = "/assignment";
 const getClasses = async () => {
 	const res = await rest.get(URL);
 	return res.data;
@@ -32,6 +33,19 @@ const checkJoinLinkValid = async (linkId) => {
 	const res = await rest.get(CHECK_LINK_URL + `/${linkId}`);
 	return res.data;
 };
+const updateAssignment = async (data) => {
+	const res = await rest.put( ASSIGNMENT_LINK,data);
+	return res.data;
+};const getAllAssignments = async (id) => {
+	const res = await rest.get( ASSIGNMENT_LINK + `/${id}`);
+	return res.data;
+};const deleteAssignment = async (id) => {
+	const res = await rest.delete( ASSIGNMENT_LINK + `/${id}`);
+	return res.data;
+};const createAssignment = async (data) => {
+	const res = await rest.post( ASSIGNMENT_LINK,data);
+	return res.data;
+};
 
 export default {
 	getClasses,
@@ -40,4 +54,8 @@ export default {
 	inviteToClass,
 	joinClass,
 	checkJoinLinkValid,
+	updateAssignment,
+	getAllAssignments,
+	deleteAssignment,
+	createAssignment
 };
