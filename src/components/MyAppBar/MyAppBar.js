@@ -21,7 +21,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { signOut } from "actions/user.action";
 import { useHistory, useParams } from "react-router-dom";
 import { RouteUrl } from "constants/router";
-import ClassesService from "services/classes.service";
 
 export default function MyAppBar({ openDrawer }) {
 	const [addAnchorEl, setAddAnchorEl] = useState(false);
@@ -31,21 +30,20 @@ export default function MyAppBar({ openDrawer }) {
 	const [modalCreateClass, toggleModalCreateClass] = useToggle(false);
 	const [modalJoinClass, toggleModalJoinClass] = useToggle(false);
 	const user = useSelector((state) => state.user);
+	const classDetail = useSelector((state) => state.classDetail);
 	const dispatch = useDispatch();
 	const history = useHistory();
-	const [title, setTitle] = useState("MyClassRoom");
-	let { id } = useParams();
 
-	useEffect(() => {
-		async function getDetailClass() {
-			let data = await ClassesService.getDetailClass(id);
-			setTitle(data.name);
-		}
-		if (history.location.pathname === "/classes") setTitle("MyClassRoom");
-		else if (history.location.pathname.includes("/class")) {
-			getDetailClass();
-		}
-	}, [history.location.pathname]);
+	// useEffect(() => {
+	// 	async function getDetailClass() {
+	// 		let data = await ClassesService.getDetailClass(id);
+	// 		setTitle(data.name);
+	// 	}
+	// 	if (history.location.pathname === "/classes") setTitle("MyClassRoom");
+	// 	else if (history.location.pathname.includes("/class")) {
+	// 		getDetailClass();
+	// 	}
+	// }, [history.location.pathname]);
 
 	const handleClickAdd = (e) => {
 		setAddAnchorEl(e.currentTarget);
@@ -73,9 +71,9 @@ export default function MyAppBar({ openDrawer }) {
 							<MenuIcon />
 						</IconButton>
 						<Typography variant="h6" sx={{ flexGrow: 1 }}>
-							{title}
+							{classDetail ? classDetail.name : "My Classroom"}
 						</Typography>
-						<div>
+						<div style={{ zIndex: 3 }}>
 							<IconButton
 								size="large"
 								color="inherit"
@@ -111,31 +109,17 @@ export default function MyAppBar({ openDrawer }) {
 													aria-labelledby="composition-button"
 												>
 													<MenuItem
-														onClick={() => {
-															toggleAddPopper(
-																false
-															);
-															toggleModalJoinClass(
-																true
-															);
-														}}
+														onClick={onJoinClassClick()}
 													>
 														Enroll class
 													</MenuItem>
-													{!user.studentId &&
+													{!user.studentId && (
 														<MenuItem
-															onClick={() => {
-																toggleAddPopper(
-																	false
-																);
-																toggleModalCreateClass(
-																	true
-																);
-															}}
+															onClick={onCreateClassClick()}
 														>
 															Create class
 														</MenuItem>
-													}
+													)}
 												</MenuList>
 											</ClickAwayListener>
 										</Paper>
@@ -150,7 +134,7 @@ export default function MyAppBar({ openDrawer }) {
 						>
 							<AppsIcon />
 						</IconButton>
-						<div>
+						<div style={{ zIndex: 3 }}>
 							<Tooltip
 								title={
 									<React.Fragment>
@@ -189,9 +173,7 @@ export default function MyAppBar({ openDrawer }) {
 											transformOrigin: "right top",
 										}}
 									>
-										<Paper
-											sx={{ width: "192px", zIndex: 1 }}
-										>
+										<Paper sx={{ width: "192px" }}>
 											<ClickAwayListener
 												onClickAway={() =>
 													toggleAvatarPopper(false)
@@ -202,25 +184,12 @@ export default function MyAppBar({ openDrawer }) {
 													aria-labelledby="composition-button"
 												>
 													<MenuItem
-														onClick={() => {
-															toggleAvatarPopper(
-																false
-															);
-															history.push(
-																RouteUrl.SETTING
-															);
-														}}
+														onClick={onSettingClick()}
 													>
 														Setting
 													</MenuItem>
 													<MenuItem
-														onClick={() => {
-															toggleAvatarPopper(
-																false
-															);
-															dispatch(signOut());
-															history.push("/");
-														}}
+														onClick={onSignOutClick()}
 													>
 														Sign out
 													</MenuItem>
@@ -244,4 +213,33 @@ export default function MyAppBar({ openDrawer }) {
 			/>
 		</>
 	);
+
+	function onJoinClassClick() {
+		return () => {
+			toggleAddPopper(false);
+			toggleModalJoinClass(true);
+		};
+	}
+
+	function onCreateClassClick() {
+		return () => {
+			toggleAddPopper(false);
+			toggleModalCreateClass(true);
+		};
+	}
+
+	function onSignOutClick() {
+		return () => {
+			toggleAvatarPopper(false);
+			dispatch(signOut());
+			history.push("/");
+		};
+	}
+
+	function onSettingClick() {
+		return () => {
+			toggleAvatarPopper(false);
+			history.push(RouteUrl.SETTING);
+		};
+	}
 }

@@ -20,7 +20,7 @@ const listItemsBeforeDivider = [
 
 const listItemsAfterDivider = [
 	{ title: "Archived classes", icon: ArchiveIcon },
-	{ title: "Settings", icon: SettingsIcon },
+	{ title: "Settings", icon: SettingsIcon, url: RouteUrl.SETTING },
 ];
 
 export default function MyDrawer({ open, onClose }) {

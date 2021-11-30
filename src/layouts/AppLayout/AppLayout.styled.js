@@ -9,4 +9,5 @@ export const Wrapper = styled.div`
 export const MyContainer = styledMUI(Container)`
 	width: 100%;
 	margin-top: 40px;
+	height: calc(100vh - 104px);
 `;

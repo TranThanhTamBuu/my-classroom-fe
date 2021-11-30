@@ -16,3 +16,7 @@ export const LINK = {
 export const AUTHENTICATION = {
 	SET: "SET_AUTHENTICATION",
 };
+export const CLASS_DETAIL = {
+	SET: "SET_CLASS_DETAIL",
+	REMOVE: "REMOVE_CLASS_DETAIL",
+};

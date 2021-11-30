@@ -1,13 +1,13 @@
-import { LINK } from "actions/types.action";
+import { CLASS_DETAIL } from "actions/types.action";
 
 const initState = null;
 
 export default function (state = initState, action) {
 	switch (action.type) {
-		case LINK.SET:
+		case CLASS_DETAIL.SET:
 			return action.payload;
 
-		case LINK.REMOVE:
+		case CLASS_DETAIL.REMOVE:
 			return null;
 
 		default:
