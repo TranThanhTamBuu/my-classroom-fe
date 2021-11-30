@@ -22,27 +22,33 @@ let schema = yup.object().shape({
 		.positive("Point must be positive"),
 });
 
-export default function ModalClassGrade({
-	open,
-	onClose,
-	listAssignment,
-	id,
-	setListAssignment,
-	isStudent,
-}) {
-	// const dispatch = useDispatch();
-	const [listGrade, setListGrade] = useState(listAssignment);
+export default function ModalClassGrade({ open, onClose, id, isStudent }) {
+	const [listGrade, setListGrade] = useState([]);
 	const [isLoading, setLoading] = useToggle(false);
 	const {
 		register,
 		setValue,
 		getValues,
-		formState: { isValid, isSubmitting, errors },
+		formState: { isValid, errors },
 	} = useForm({
 		mode: "onChange",
 		defaultValues: { name: "", point: 0 },
 		resolver: yupResolver(schema),
 	});
+
+	useEffect(() => {
+		async function getAssignment() {
+			let listAssignment = await ClassesService.getAllAssignments(id);
+			console.log(listAssignment);
+			listAssignment = listAssignment
+				.sort((a, b) => a.position - b.position)
+				.map((e) => {
+					return { name: e.title, point: e.totalPoint, id: e._id };
+				});
+			setListGrade(listAssignment);
+		}
+		getAssignment();
+	}, []);
 
 	const onClickAdd = () => {
 		const point = getValues("point").replace(
@@ -91,7 +97,6 @@ export default function ModalClassGrade({
 	const onClickSave = async () => {
 		setLoading(true);
 		const listGradeCopy = listGrade.slice();
-		setListAssignment(listGradeCopy);
 		const data = {
 			classId: id,
 			listAssignment: listGradeCopy.map((e, index) => {
@@ -117,6 +122,7 @@ export default function ModalClassGrade({
 
 		setListGrade(items);
 	};
+
 	return (
 		<Dialog open={open} onClose={onClose} fullWidth={true} maxWidth={"md"}>
 			<DialogTitle>Join class</DialogTitle>
@@ -161,7 +167,7 @@ export default function ModalClassGrade({
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={onClose}>
-				<Typography variant="button">
+					<Typography variant="button">
 						{isStudent ? "Close" : "Cancel"}
 					</Typography>
 				</Button>
@@ -180,7 +186,7 @@ export default function ModalClassGrade({
 							}
 							onClick={onClickSave}
 						>
-							<Typography variant="button">Invite</Typography>
+							<Typography variant="button">Save</Typography>
 						</LoadingButton>
 					</>
 				)}

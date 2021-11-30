@@ -5,9 +5,10 @@ import Paper from "@mui/material/Paper";
 
 export const TabContainer = styled.div`
 	padding: 5;
+	height: 100%;
 	display: box;
 	gap: 6px;
-	padding: 25px 12%;
+	padding: 25px 5%;
 `;
 
 export const MyContainer = styled.div`
@@ -17,6 +18,18 @@ export const MyContainer = styled.div`
 	justify-content: space-between;
 	padding: 10px;
 	background-color: ${indigo[500]};
+`;
+export const MyFileInput = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+`;
+
+export const UploadPicture = styled.img`
+	height: 20%;
+	width: 20%;
+	margin-bottom: 20px;
 `;
 
 export const Item = MUIstyled(Paper)(({ theme }) => ({

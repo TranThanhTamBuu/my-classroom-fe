@@ -16,6 +16,8 @@
 		"@mui/lab": "^5.0.0-alpha.53",
 		"@mui/material": "^5.0.6",
 		"@mui/styled-engine-sc": "5.0.4",
+		"@mui/x-data-grid": "^5.0.1",
+		"@mui/x-data-grid-pro": "^5.0.1",
 		"@testing-library/jest-dom": "^5.11.4",
 		"@testing-library/react": "^11.1.0",
 		"@testing-library/user-event": "^12.1.10",
@@ -36,6 +38,7 @@
 		"react": "17.0.2",
 		"react-beautiful-dnd": "^13.1.0",
 		"react-dom": "17.0.2",
+		"react-dropzone": "^11.4.2",
 		"react-hook-form": "^7.18.0",
 		"react-redux": "^7.2.6",
 		"react-router-dom": "^5.2.0",
@@ -48,6 +51,7 @@
 		"styled-components": "5.3.3",
 		"universal-cookie": "^4.0.4",
 		"web-vitals": "^1.0.1",
+		"xlsx": "^0.17.4",
 		"yup": "^0.32.11"
 	},
 	"scripts": {
