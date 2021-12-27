@@ -17,4 +17,5 @@ export const AUTH_VALIDATION = {
 	CODE_UNAUTHORIZED: 401,
 	CODE_CONFLICT: 409,
 	ERROR_THIRD_PARTY_CREDENTIAL: "This email has not been signed up.",
+	ERROR_DEACTIVATED_USER: "This user has been deactivated",
 };

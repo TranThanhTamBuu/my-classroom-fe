@@ -14,7 +14,7 @@ function AuthRoute({ path, exact, component: Component }) {
 	const token = useParams();
 	useEffect(() => {
 		if (!user) {
-			if (path.toString().includes('activate')) {
+			if (path.toString().includes("activate")) {
 				dispatch(setLinkId(token.toString()));
 			}
 			history.push("/");

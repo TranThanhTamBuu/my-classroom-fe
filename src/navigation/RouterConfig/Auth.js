@@ -18,4 +18,8 @@ export const AuthConfig = [
 		component: lazy(() => import("screens/LoggedAcceptLink")),
 		path: RouteUrl.ACCEPT_LINK,
 	},
+	{
+		component: lazy(() => import("screens/Admin")),
+		path: RouteUrl.ADMIN,
+	},
 ];

@@ -6,4 +6,5 @@ export const RouteUrl = {
 	CLASS: "/class",
 	SETTING: "/setting",
 	ACCEPT_LINK: "/activate/:token",
+	ADMIN: "/admin",
 };

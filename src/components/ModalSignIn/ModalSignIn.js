@@ -60,9 +60,10 @@ export default function ModalSignUp() {
 		const response = await AuthService.signIn(data);
 		if (response.statusCode) {
 			setServerError(
-				response.statusCode === AUTH_VALIDATION.CODE_UNAUTHORIZED
+				response.statusCode === AUTH_VALIDATION.CODE_UNAUTHORIZED &&
+					response.message === "Unauthorized"
 					? AUTH_VALIDATION.ERROR_SIGN_IN_FAILED
-					: AUTH_VALIDATION.INTERNAL_ERROR
+					: AUTH_VALIDATION.ERROR_DEACTIVATED_USER
 			);
 		} else {
 			localStorage.setItem(
@@ -84,12 +85,16 @@ export default function ModalSignUp() {
 					const statusCode = cookies.get(
 						LOCAL_STORAGE_KEY.STATUS_CODE
 					);
+					const message = cookies.get(LOCAL_STORAGE_KEY.MESSAGE);
 					const accessToken = cookies.get(
 						LOCAL_STORAGE_KEY.ACCESS_TOKEN
 					);
 					if (statusCode)
 						setServerError(
-							AUTH_VALIDATION.ERROR_THIRD_PARTY_CREDENTIAL
+							statusCode === AUTH_VALIDATION.CODE_UNAUTHORIZED &&
+								message === "Unauthorized"
+								? AUTH_VALIDATION.ERROR_THIRD_PARTY_CREDENTIAL
+								: AUTH_VALIDATION.ERROR_DEACTIVATED_USER
 						);
 					else if (accessToken) {
 						localStorage.setItem(
