@@ -1,9 +1,7 @@
 import React from "react";
 import Drawer from "@mui/material/Drawer";
 import HomeIcon from "@mui/icons-material/Home";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import SettingsIcon from "@mui/icons-material/Settings";
-import ArchiveIcon from "@mui/icons-material/Archive";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
@@ -12,19 +10,22 @@ import ListItemText from "@mui/material/ListItemText";
 import Box from "@mui/material/Box";
 import { RouteUrl } from "constants/router";
 import { useHistory } from "react-router";
+import { useSelector } from "react-redux";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 const listItemsBeforeDivider = [
 	{ title: "Classes", icon: HomeIcon, url: RouteUrl.MY_CLASSES },
-	{ title: "Calendar", icon: CalendarTodayIcon },
 ];
 
 const listItemsAfterDivider = [
-	{ title: "Archived classes", icon: ArchiveIcon },
+	{ title: "Admin Panel", icon: AdminPanelSettingsIcon, url: RouteUrl.ADMIN },
 	{ title: "Settings", icon: SettingsIcon, url: RouteUrl.SETTING },
 ];
 
 export default function MyDrawer({ open, onClose }) {
 	const history = useHistory();
+	const user = useSelector((state) => state.user);
+
 	const renderItem = ({ title, icon: Icon, url }) => (
 		<ListItem
 			button
@@ -54,7 +55,15 @@ export default function MyDrawer({ open, onClose }) {
 				{listItemsBeforeDivider.map((item) => renderItem(item))}
 			</List>
 			<Divider />
-			<List>{listItemsAfterDivider.map((item) => renderItem(item))}</List>
+			<List>
+				{listItemsAfterDivider
+					.filter(
+						(item) =>
+							item.title !== "Admin Panel" ||
+							(item.title === "Admin Panel" && user.isAdmin)
+					)
+					.map((item) => renderItem(item))}
+			</List>
 		</Box>
 	);
 
