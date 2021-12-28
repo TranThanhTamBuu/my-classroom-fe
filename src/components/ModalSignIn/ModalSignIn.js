@@ -60,7 +60,8 @@ export default function ModalSignUp() {
 		const response = await AuthService.signIn(data);
 		if (response.statusCode) {
 			setServerError(
-				response.statusCode === AUTH_VALIDATION.CODE_UNAUTHORIZED &&
+				parseInt(response.statusCode) ===
+					AUTH_VALIDATION.CODE_UNAUTHORIZED &&
 					response.message === "Unauthorized"
 					? AUTH_VALIDATION.ERROR_SIGN_IN_FAILED
 					: AUTH_VALIDATION.ERROR_DEACTIVATED_USER
@@ -91,7 +92,8 @@ export default function ModalSignUp() {
 					);
 					if (statusCode)
 						setServerError(
-							statusCode === AUTH_VALIDATION.CODE_UNAUTHORIZED &&
+							parseInt(statusCode) ===
+								AUTH_VALIDATION.CODE_UNAUTHORIZED &&
 								message === "Unauthorized"
 								? AUTH_VALIDATION.ERROR_THIRD_PARTY_CREDENTIAL
 								: AUTH_VALIDATION.ERROR_DEACTIVATED_USER

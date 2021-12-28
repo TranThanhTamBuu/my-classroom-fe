@@ -4,6 +4,8 @@ export { default as MyDrawer } from "./MyDrawer";
 export { default as Class } from "./Class";
 export { MyTooltip } from "./MyTooltip";
 export { default as ModalCreateClass } from "./ModalCreateClass";
+export { default as ModalCreateAdmin } from "./ModalCreateAdmin";
+export { default as ModalChangeStudentId } from "./ModalChangeStudentId";
 export { default as ModalJoinClass } from "./ModalJoinClass";
 export { default as ModalSignUp } from "./ModalSignUp";
 export { default as ModalSignIn } from "./ModalSignIn";

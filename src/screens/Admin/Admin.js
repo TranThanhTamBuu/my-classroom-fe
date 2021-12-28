@@ -40,11 +40,13 @@ export default function Admin() {
 	};
 
 	useEffect(() => {
-		if (user && !user.isAdmin) history.replace("/404");
+		if (user && !user.accessToken && !user.isAdmin) {
+			history.replace("/404");
+		}
 	}, [user]);
 
 	return (
-		<Box sx={{ width: "100%" }}>
+		<Box sx={{ width: "100%", height: "100%" }}>
 			<Box sx={{ borderBottom: 1, borderColor: "divider" }}>
 				<Tabs
 					value={value}
