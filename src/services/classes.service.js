@@ -82,6 +82,18 @@ const getAllClasses = async () => {
 	return res.data;
 };
 
+const toggleActive = async (classIds, active) => {
+	try {
+		const res = await rest.post(URL + "/toggle-active", {
+			classIds,
+			active,
+		});
+		return res.data;
+	} catch (error) {
+		return error.response.data;
+	}
+};
+
 export default {
 	getClasses,
 	createClass,
@@ -98,4 +110,5 @@ export default {
 	getGradeboardTemplate,
 	setListGrade,
 	getAllClasses,
+	toggleActive,
 };

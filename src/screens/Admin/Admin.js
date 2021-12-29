@@ -4,8 +4,9 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-
-import UsersTab from "./UsersTab";
+import ClassesTable from "./ClassesTable";
+import UsersTable from "./UsersTable";
+import * as Styled from "./Admin.styled";
 
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
@@ -58,10 +59,12 @@ export default function Admin() {
 				</Tabs>
 			</Box>
 			<TabPanel value={value} index={0}>
-				<UsersTab />
+				<UsersTable isAdmin={true} />
+				<Styled.Spacer />
+				<UsersTable />
 			</TabPanel>
 			<TabPanel value={value} index={1}>
-				Classes
+				<ClassesTable />
 			</TabPanel>
 		</Box>
 	);

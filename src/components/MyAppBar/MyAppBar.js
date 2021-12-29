@@ -184,6 +184,11 @@ export default function MyAppBar({ openDrawer }) {
 													aria-labelledby="composition-button"
 												>
 													<MenuItem
+														onClick={onAdminPanelClick()}
+													>
+														Admin Panel
+													</MenuItem>
+													<MenuItem
 														onClick={onSettingClick()}
 													>
 														Setting
@@ -240,6 +245,13 @@ export default function MyAppBar({ openDrawer }) {
 		return () => {
 			toggleAvatarPopper(false);
 			history.push(RouteUrl.SETTING);
+		};
+	}
+
+	function onAdminPanelClick() {
+		return () => {
+			toggleAvatarPopper(false);
+			history.push(RouteUrl.ADMIN);
 		};
 	}
 }

@@ -35,7 +35,12 @@ const editProfile = async (data) => {
 };
 
 const getAllUsers = async () => {
-	const res = await rest.get(URL + "/users");
+	const res = await rest.get(URL + "/users/user");
+	return res.data;
+};
+
+const getAllAdmins = async () => {
+	const res = await rest.get(URL + "/users/admin");
 	return res.data;
 };
 
@@ -57,6 +62,18 @@ const changeStudentId = async (data) => {
 	}
 };
 
+const toggleActive = async (userIds, active) => {
+	try {
+		const res = await rest.post(URL + "/toggle-active", {
+			userIds,
+			active,
+		});
+		return res.data;
+	} catch (error) {
+		return error.response.data;
+	}
+};
+
 export default {
 	getCurrentUser,
 	signIn,
@@ -65,4 +82,6 @@ export default {
 	getAllUsers,
 	createAdmin,
 	changeStudentId,
+	toggleActive,
+	getAllAdmins,
 };
