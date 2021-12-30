@@ -16,6 +16,7 @@ export const AUTH_VALIDATION = {
 	INTERNAL_ERROR: "Something went wrong. Please try again.",
 	CODE_UNAUTHORIZED: 401,
 	CODE_CONFLICT: 409,
-	ERROR_THIRD_PARTY_CREDENTIAL: "This email has not been signed up.",
-	ERROR_DEACTIVATED_USER: "This user has been deactivated",
+	ERROR_THIRD_PARTY_CREDENTIAL: "This email has not been signed up yet.",
+	ERROR_DEACTIVATED_USER: "Your account has been deactivated.",
+	ERROR_UNACTIVATION_USER: "Please check your email for activation.",
 };

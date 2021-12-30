@@ -18,13 +18,15 @@ import { initUser } from "actions/user.action";
 import { popupCenter } from "utils/popup.utils";
 import Cookies from "universal-cookie";
 import { AUTHENTICATION } from "actions/types.action";
+import { useSearchParam } from "react-use";
 
-export default function ModalSignUp() {
+export default function ModalSignIn() {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const [serverError, setServerError] = useState("");
 	const [reload, setReload] = useState(false);
 	const cookies = new Cookies();
+	const [activation, setActivation] = useState(useSearchParam("activation"));
 
 	useEffect(() => {
 		if (reload) window.location.reload();
@@ -57,15 +59,19 @@ export default function ModalSignUp() {
 	});
 
 	const onSubmit = async (data) => {
+		setActivation("");
 		const response = await AuthService.signIn(data);
-		if (response.statusCode) {
-			setServerError(
-				parseInt(response.statusCode) ===
-					AUTH_VALIDATION.CODE_UNAUTHORIZED &&
-					response.message === "Unauthorized"
-					? AUTH_VALIDATION.ERROR_SIGN_IN_FAILED
-					: AUTH_VALIDATION.ERROR_DEACTIVATED_USER
-			);
+		if (
+			response.statusCode &&
+			parseInt(response.statusCode) === AUTH_VALIDATION.CODE_UNAUTHORIZED
+		) {
+			if (response.message === "Unauthorized") {
+				setServerError(AUTH_VALIDATION.ERROR_SIGN_IN_FAILED);
+			} else if (response.message === "Unactivation") {
+				setServerError(AUTH_VALIDATION.ERROR_UNACTIVATION_USER);
+			} else {
+				setServerError(AUTH_VALIDATION.ERROR_DEACTIVATED_USER);
+			}
 		} else {
 			localStorage.setItem(
 				LOCAL_STORAGE_KEY.ACCESS_TOKEN,
@@ -90,15 +96,25 @@ export default function ModalSignUp() {
 					const accessToken = cookies.get(
 						LOCAL_STORAGE_KEY.ACCESS_TOKEN
 					);
-					if (statusCode)
-						setServerError(
-							parseInt(statusCode) ===
-								AUTH_VALIDATION.CODE_UNAUTHORIZED &&
-								message === "Unauthorized"
-								? AUTH_VALIDATION.ERROR_THIRD_PARTY_CREDENTIAL
-								: AUTH_VALIDATION.ERROR_DEACTIVATED_USER
-						);
-					else if (accessToken) {
+					if (
+						statusCode &&
+						parseInt(statusCode) ===
+							AUTH_VALIDATION.CODE_UNAUTHORIZED
+					) {
+						if (message === "Unauthorized") {
+							setServerError(
+								AUTH_VALIDATION.ERROR_THIRD_PARTY_CREDENTIAL
+							);
+						} else if (message === "Unactivation") {
+							setServerError(
+								AUTH_VALIDATION.ERROR_UNACTIVATION_USER
+							);
+						} else {
+							setServerError(
+								AUTH_VALIDATION.ERROR_DEACTIVATED_USER
+							);
+						}
+					} else if (accessToken) {
 						localStorage.setItem(
 							LOCAL_STORAGE_KEY.ACCESS_TOKEN,
 							accessToken
@@ -150,6 +166,13 @@ export default function ModalSignUp() {
 			{serverError && (
 				<Alert severity="error" sx={{ marginBottom: "24px" }}>
 					<Typography color="error">{serverError}</Typography>
+				</Alert>
+			)}
+			{activation === "1" && (
+				<Alert severity="success" sx={{ marginBottom: "24px" }}>
+					<Typography color="success">
+						Your account has been activated successfully.
+					</Typography>
 				</Alert>
 			)}
 			<Button
