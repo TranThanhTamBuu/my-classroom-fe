@@ -16,9 +16,15 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { AUTH_VALIDATION } from "constants/validation";
 import AuthService from "services/auth.service";
 import { useDispatch } from "react-redux";
-import { initUser } from "actions/user.action";
-import { LOCAL_STORAGE_KEY } from "constants/localStorage";
 import { AUTHENTICATION } from "actions/types.action";
+
+const defaultValues = {
+	email: "",
+	password: "",
+	confirmPassword: "",
+	name: "",
+	studentId: "",
+};
 
 export default function ModalSignUp() {
 	const [teacher, toggleTeacher] = useToggle(false);
@@ -26,6 +32,7 @@ export default function ModalSignUp() {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const [serverError, setServerError] = useState("");
+	const [activation, setActivation] = useState("");
 
 	const validationSchema = yup.object().shape({
 		email: yup
@@ -64,21 +71,17 @@ export default function ModalSignUp() {
 	const {
 		register,
 		handleSubmit,
+		reset,
 		formState: { isValid, isSubmitting, errors },
 	} = useForm({
 		mode: "onTouched",
 		reValidateMode: "onChange",
-		defaultValues: {
-			email: "",
-			password: "",
-			confirmPassword: "",
-			name: "",
-			studentId: "",
-		},
+		defaultValues,
 		resolver: yupResolver(validationSchema),
 	});
 
 	const onSubmit = async (data) => {
+		setActivation("");
 		const response = await AuthService.signUp(data);
 		if (response.statusCode) {
 			setServerError(
@@ -87,11 +90,10 @@ export default function ModalSignUp() {
 					: AUTH_VALIDATION.INTERNAL_ERROR
 			);
 		} else {
-			localStorage.setItem(
-				LOCAL_STORAGE_KEY.ACCESS_TOKEN,
-				response.accessToken
+			setActivation(
+				"Your registration was successful. Please check mail for activation."
 			);
-			dispatch(initUser());
+			reset(defaultValues);
 		}
 	};
 
@@ -113,6 +115,11 @@ export default function ModalSignUp() {
 			{serverError && (
 				<Alert severity="error" sx={{ marginBottom: "24px" }}>
 					<Typography color="error">{serverError}</Typography>
+				</Alert>
+			)}
+			{activation && (
+				<Alert severity="success" sx={{ marginBottom: "24px" }}>
+					<Typography color="success">{activation}</Typography>
 				</Alert>
 			)}
 			<form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
