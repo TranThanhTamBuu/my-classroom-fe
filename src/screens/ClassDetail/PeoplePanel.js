@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Divider } from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -7,14 +7,8 @@ import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
 import { Typography } from "@mui/material";
 import { Stack } from "@mui/material";
-import MuiAlert from "@mui/material/Alert";
-
-const SnackbarAlert = React.forwardRef(function Alert(props, ref) {
-	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
 
 export default function PeoplePanel({ classDetail }) {
-    
 	return (
 		<>
 			<Typography variant="h4">Teachers</Typography>

@@ -19,7 +19,7 @@ import MenuList from "@mui/material/MenuList";
 import { ModalCreateClass, ModalJoinClass } from "components";
 import { useSelector, useDispatch } from "react-redux";
 import { signOut } from "actions/user.action";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { RouteUrl } from "constants/router";
 
 export default function MyAppBar({ openDrawer }) {
@@ -33,17 +33,6 @@ export default function MyAppBar({ openDrawer }) {
 	const classDetail = useSelector((state) => state.classDetail);
 	const dispatch = useDispatch();
 	const history = useHistory();
-
-	// useEffect(() => {
-	// 	async function getDetailClass() {
-	// 		let data = await ClassesService.getDetailClass(id);
-	// 		setTitle(data.name);
-	// 	}
-	// 	if (history.location.pathname === "/classes") setTitle("MyClassRoom");
-	// 	else if (history.location.pathname.includes("/class")) {
-	// 		getDetailClass();
-	// 	}
-	// }, [history.location.pathname]);
 
 	const handleClickAdd = (e) => {
 		setAddAnchorEl(e.currentTarget);
@@ -73,60 +62,65 @@ export default function MyAppBar({ openDrawer }) {
 						<Typography variant="h6" sx={{ flexGrow: 1 }}>
 							{classDetail ? classDetail.name : "My Classroom"}
 						</Typography>
-						<div style={{ zIndex: 3 }}>
-							<IconButton
-								size="large"
-								color="inherit"
-								aria-label="add"
-								onClick={handleClickAdd}
-							>
-								<AddIcon />
-							</IconButton>
-							<Popper
-								open={addPopper}
-								anchorEl={addAnchorEl}
-								placement="bottom-end"
-								disablePortal
-								transition
-							>
-								{({ TransitionProps }) => (
-									<Grow
-										{...TransitionProps}
-										style={{
-											transformOrigin: "right top",
-										}}
-									>
-										<Paper
-											sx={{ width: "192px", zIndex: 1 }}
+						{!classDetail && (
+							<div style={{ zIndex: 3 }}>
+								<IconButton
+									size="large"
+									color="inherit"
+									aria-label="add"
+									onClick={handleClickAdd}
+								>
+									<AddIcon />
+								</IconButton>
+								<Popper
+									open={addPopper}
+									anchorEl={addAnchorEl}
+									placement="bottom-end"
+									disablePortal
+									transition
+								>
+									{({ TransitionProps }) => (
+										<Grow
+											{...TransitionProps}
+											style={{
+												transformOrigin: "right top",
+											}}
 										>
-											<ClickAwayListener
-												onClickAway={() =>
-													toggleAddPopper(false)
-												}
+											<Paper
+												sx={{
+													width: "192px",
+													zIndex: 1,
+												}}
 											>
-												<MenuList
-													id="composition-menu"
-													aria-labelledby="composition-button"
+												<ClickAwayListener
+													onClickAway={() =>
+														toggleAddPopper(false)
+													}
 												>
-													<MenuItem
-														onClick={onJoinClassClick()}
+													<MenuList
+														id="composition-menu"
+														aria-labelledby="composition-button"
 													>
-														Enroll class
-													</MenuItem>
-													{!user.studentId && (
 														<MenuItem
-															onClick={onCreateClassClick()}
+															onClick={onJoinClassClick()}
 														>
-															Create class
+															Enroll class
 														</MenuItem>
-													)}
-												</MenuList>
-											</ClickAwayListener>
-										</Paper>
-									</Grow>
-								)}
-							</Popper>
-						</div>
+														{!user.studentId && (
+															<MenuItem
+																onClick={onCreateClassClick()}
+															>
+																Create class
+															</MenuItem>
+														)}
+													</MenuList>
+												</ClickAwayListener>
+											</Paper>
+										</Grow>
+									)}
+								</Popper>
+							</div>
+						)}
 						<IconButton
 							size="large"
 							color="inherit"
@@ -208,6 +202,7 @@ export default function MyAppBar({ openDrawer }) {
 					</Toolbar>
 				</AppBar>
 			</Box>
+
 			<ModalCreateClass
 				open={modalCreateClass}
 				onClose={() => toggleModalCreateClass(false)}
