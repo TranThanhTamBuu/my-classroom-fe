@@ -19,7 +19,6 @@ import Collapse from "@mui/material/Collapse";
 import { useToggle } from "react-use";
 import { Box } from "@mui/system";
 import { HyperlinkText } from "components";
-import { useParams } from "react-router-dom";
 
 export default function ModalUploadGrade({
 	openModal,
@@ -31,7 +30,6 @@ export default function ModalUploadGrade({
 	// const dispatch = useDispatch();
 	const [assignment, setAssignment] = useState();
 	const [openError, setOpenError] = useToggle(false);
-	const { id } = useParams();
 	const { getRootProps, open, getInputProps } = useDropzone({
 		maxFiles: 1,
 		noClick: true,
@@ -95,13 +93,7 @@ export default function ModalUploadGrade({
 			};
 		};
 	};
-	const onClickSubmit = async () => {
-		const body = {
-			assignmentId: assignment.id,
-		};
-		await ClassesService.inviteToClass(body);
-		onClose();
-	};
+
 	const handleChange = (event) => {
 		setAssignment(event.target.value);
 	};

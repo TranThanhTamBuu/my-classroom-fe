@@ -15,7 +15,7 @@ import { MyTooltip } from "components";
 import { RouteUrl } from "constants/router";
 
 export default function Class({ item }) {
-	const { name, teacher,_id } = item;
+	const { name, teacher, _id } = item;
 	return (
 		<Card
 			variant="outlined"
@@ -28,7 +28,7 @@ export default function Class({ item }) {
 			<Styled.HeaderWrapper>
 				<Styled.MyContainer>
 					<Styled.TitleContainer>
-					<Styled.Link to={RouteUrl.CLASS + `/${_id}`}>
+						<Styled.Link to={RouteUrl.CLASS + `/${_id}`}>
 							{name}
 						</Styled.Link>
 						<IconButton

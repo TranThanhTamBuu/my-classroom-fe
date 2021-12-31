@@ -5,14 +5,14 @@ import Paper from "@mui/material/Paper";
 
 export const TabContainer = styled.div`
 	padding: 5;
-	height: 100%;
+	min-height: 100%;
 	display: box;
 	gap: 6px;
 	padding: 25px 5%;
 `;
 
 export const MyContainer = styled.div`
-	height: 100%;
+	min-height: 100%;
 	display: flex;
 	flex-direction: column-reverse;
 	justify-content: space-between;

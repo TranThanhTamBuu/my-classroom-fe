@@ -14,6 +14,7 @@ import PeoplePanel from "./PeoplePanel";
 import GradePanel from "./GradePanel";
 import { setClassDetail, removeClassDetail } from "actions/classDetail.action";
 import { useSelector, useDispatch } from "react-redux";
+import StudentGradePanel from "./StudentGradePanel";
 
 const SnackbarAlert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -49,7 +50,9 @@ export default function ClassDetail() {
 	const [inviteLink, setInviteLink] = useState("");
 	const [openError, setOpenErrorModal] = useState(false);
 	const [gradeBoard, setGradeBoard] = useState([]);
-
+	const [listRequest, setListRequest] = useState([]);
+	const user = useSelector((state) => state.user);
+	const isTeacher = user.studentId === "";
 	const classDetail = useSelector((state) => state.classDetail);
 	const { id } = useParams();
 
@@ -57,8 +60,12 @@ export default function ClassDetail() {
 		async function getDetailClass() {
 			let data = await ClassesService.getDetailClass(id);
 			dispatch(setClassDetail(data));
-
-			let grade = await ClassesService.getGradeboard(id);
+			// let listRequest = await ClassesService.getListReviewRequest(id);
+			// console.log(listRequest);
+			let grade;
+			if (isTeacher) grade = await ClassesService.getGradeboard(id);
+			else grade = await ClassesService.getStudentGradeboard(id);
+			console.log(grade);
 			setGradeBoard(grade);
 			try {
 				let inviteLink = await ClassesService.inviteToClass({
@@ -99,13 +106,19 @@ export default function ClassDetail() {
 					/>
 				</TabPanel>
 				<TabPanel value={tabIndex} index={1}>
-					<GradePanel
-						gradeBoard={gradeBoard}
-						setGradeBoard={async () => {
-							let grade = await ClassesService.getGradeboard(id);
-							setGradeBoard(grade);
-						}}
-					/>
+					{isTeacher ? (
+						<GradePanel
+							gradeBoard={gradeBoard}
+							setGradeBoard={async () => {
+								let grade = await ClassesService.getGradeboard(
+									id
+								);
+								setGradeBoard(grade);
+							}}
+						/>
+					) : (
+						<StudentGradePanel gradeBoard={gradeBoard} />
+					)}
 				</TabPanel>
 				<TabPanel value={tabIndex} index={2}>
 					<PeoplePanel classDetail={classDetail} />

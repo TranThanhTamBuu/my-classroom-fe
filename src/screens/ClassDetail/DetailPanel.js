@@ -24,11 +24,7 @@ const SnackbarAlert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function DetailPanel({
-	classDetail,
-	inviteLink,
-	id,
-}) {
+export default function DetailPanel({ classDetail, inviteLink, id }) {
 	const [addAnchorEl, setAddAnchorEl] = useState(false);
 	const [addPopper, toggleAddPopper] = useToggle(false);
 	const [modalInvite, toggleModalInvite] = useToggle(false);

@@ -32,7 +32,6 @@ const joinClass = async (data) => {
 };
 
 const checkJoinLinkValid = async (linkId) => {
-	console.log("checkJoinLinkValid: ", linkId);
 	const res = await rest.get(CHECK_LINK_URL + `/${linkId}`);
 	return res.data;
 };
@@ -66,7 +65,10 @@ const getGradeboard = async (id) => {
 	const res = await rest.get(`${ASSIGNMENT_URL}/grade/class/${id}`);
 	return res.data;
 };
-
+const getStudentGradeboard = async (id) => {
+	const res = await rest.get(`${ASSIGNMENT_URL}/grade/student/${id}`);
+	return res.data;
+};
 const getGradeboardTemplate = async (id) => {
 	const res = await rest.get(`${ASSIGNMENT_URL}/grade/default/${id}`);
 	return res.data;
@@ -93,7 +95,30 @@ const toggleActive = async (classIds, active) => {
 		return error.response.data;
 	}
 };
-
+const markFinalizedGrade = async (id) => {
+	const res = await rest.put(`${ASSIGNMENT_URL}/markFinalized/${id}`);
+	return res.data;
+};
+const unmarkFinalizedGrade = async (id) => {
+	const res = await rest.put(`${ASSIGNMENT_URL}/markUnfinalized/${id}`);
+	return res.data;
+};
+const requestReview = async (body) => {
+	const res = await rest.put(`${ASSIGNMENT_URL}/review-request`, body);
+	return res.data;
+};
+const getListReviewRequest = async (id) => {
+	const res = await rest.get(`${ASSIGNMENT_URL}/listReviewRequest/${id}`);
+	return res.data;
+};
+const studentComment = async (body) => {
+	const res = await rest.put(`${ASSIGNMENT_URL}/updateReview`, body);
+	return res.data;
+};
+const teacherComment = async (body) => {
+	const res = await rest.put(`${ASSIGNMENT_URL}/updateGrade`, body);
+	return res.data;
+};
 export default {
 	getClasses,
 	createClass,
@@ -111,4 +136,11 @@ export default {
 	setListGrade,
 	getAllClasses,
 	toggleActive,
+	getStudentGradeboard,
+	markFinalizedGrade,
+	unmarkFinalizedGrade,
+	requestReview,
+	getListReviewRequest,
+	studentComment,
+	teacherComment,
 };
