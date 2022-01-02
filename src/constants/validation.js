@@ -19,4 +19,5 @@ export const AUTH_VALIDATION = {
 	ERROR_THIRD_PARTY_CREDENTIAL: "This email has not been signed up yet.",
 	ERROR_DEACTIVATED_USER: "Your account has been deactivated.",
 	ERROR_UNACTIVATION_USER: "Please check your email for activation.",
+	ERROR_EXPIRE_TOKEN: "Your reset mail is expired. Please try again.",
 };

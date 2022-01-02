@@ -25,6 +25,24 @@ const signUp = async (data) => {
 	}
 };
 
+const forgotPassword = async (data) => {
+	try {
+		const res = await rest.post(URL + "/forgot-password", data);
+		return res.data;
+	} catch (error) {
+		return error.response.data;
+	}
+};
+
+const resetPassword = async (data) => {
+	try {
+		const res = await rest.post(URL + "/reset-password", data);
+		return res.data;
+	} catch (error) {
+		return error.response.data;
+	}
+};
+
 const editProfile = async (data) => {
 	try {
 		const res = await rest.post(URL + "/profile", data);
@@ -84,4 +102,6 @@ export default {
 	changeStudentId,
 	toggleActive,
 	getAllAdmins,
+	forgotPassword,
+	resetPassword,
 };

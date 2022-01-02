@@ -7,6 +7,8 @@ export { default as ModalCreateClass } from "./ModalCreateClass";
 export { default as ModalCreateAdmin } from "./ModalCreateAdmin";
 export { default as ModalChangeStudentId } from "./ModalChangeStudentId";
 export { default as ModalConfirmation } from "./ModalConfirmation";
+export { default as ModalForgotPassword } from "./ModalForgotPassword";
+export { default as ModalResetPassword } from "./ModalResetPassword";
 export { default as EnhancedTableHead } from "./EnhanceTableHead";
 export { default as EnhancedTableToolbar } from "./EnhancedTableToolbar";
 export { default as ModalJoinClass } from "./ModalJoinClass";
