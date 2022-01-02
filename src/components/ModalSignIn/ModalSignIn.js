@@ -258,6 +258,19 @@ export default function ModalSignIn() {
 					</Typography>
 				</LoadingButton>
 			</form>
+			<Styled.InstructionContainer style={{ marginBottom: "0px" }}>
+				<InstructionText text="Forgot your password?" />
+				<HyperlinkText
+					text="Forgot password"
+					onClick={() => {
+						history.push("/?tab=forgot-password");
+						dispatch({
+							type: AUTHENTICATION.SET,
+							payload: "forgot-password",
+						});
+					}}
+				/>
+			</Styled.InstructionContainer>
 		</>
 	);
 }

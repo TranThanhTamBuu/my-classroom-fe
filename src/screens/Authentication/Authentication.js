@@ -2,10 +2,16 @@ import React, { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import * as Styled from "./Authentication.styled";
 import Typography from "@mui/material/Typography";
-import { ModalSignUp, ModalSignIn } from "components";
+import {
+	ModalSignUp,
+	ModalSignIn,
+	ModalForgotPassword,
+	ModalResetPassword,
+} from "components";
 import { useSearchParam } from "react-use";
 import { useHistory } from "react-router";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { AUTHENTICATION } from "actions/types.action";
 
 const TAB_NAVIGATION = {
 	"sign-in": {
@@ -16,19 +22,32 @@ const TAB_NAVIGATION = {
 		title: "Sign Up",
 		Component: ModalSignUp,
 	},
+	"forgot-password": {
+		title: "Forgot Password",
+		Component: ModalForgotPassword,
+	},
+	"reset-password": {
+		title: "Reset Password",
+		Component: ModalResetPassword,
+	},
 };
 
 export default function Authentication() {
+	const dispatch = useDispatch();
 	const authentication = useSelector((state) => state.authentication);
 	const tab = useSearchParam("tab");
 	const history = useHistory();
 	const user = useSelector((state) => state.user);
 	const [page, setPage] = useState(
-		TAB_NAVIGATION[authentication || "sign-in"]
+		TAB_NAVIGATION[tab || authentication || "sign-in"]
 	);
 
 	useEffect(() => {
-		setPage(TAB_NAVIGATION[tab || "sign-in"]);
+		if (tab)
+			dispatch({
+				type: AUTHENTICATION.SET,
+				payload: tab,
+			});
 	}, []);
 
 	useEffect(() => {
