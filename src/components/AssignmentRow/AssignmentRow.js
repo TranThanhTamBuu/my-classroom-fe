@@ -86,7 +86,7 @@ export default function AssignmentRow({
 	draggableProvided,
 	onClickCancelEdit,
 	onClickSaveEdit,
-	isStudent,
+	isTeacher,
 }) {
 	const [name, setName] = useState(item.name);
 	const handleNameChange = (event) => {
@@ -107,7 +107,7 @@ export default function AssignmentRow({
 
 	return (
 		<>
-			{!isStudent && (
+			{isTeacher && (
 				<ActionCell
 					isEditMode={item.isEditMode}
 					draggableProvided={draggableProvided}
@@ -126,7 +126,7 @@ export default function AssignmentRow({
 				handleChange={handlePointChange}
 				isEditMode={item.isEditMode}
 			/>
-			{!isStudent && (
+			{isTeacher && (
 				<TableCell align="center">
 					<IconButton
 						edge="end"

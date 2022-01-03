@@ -20,3 +20,4 @@ export { default as ModalInvite } from "./ModalInvite";
 export { default as ModalClassGrade } from "./ModalClassGrade";
 export { default as AssignmentTable } from "./AssignmentTable";
 export { default as AssignmentRow } from "./AssignmentRow";
+export { default as ErrorSnackbar } from "./ErrorSnackbar";

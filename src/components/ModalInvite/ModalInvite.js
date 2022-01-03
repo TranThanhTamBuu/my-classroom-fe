@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Button from "@mui/material/Button";
+import { useDispatch } from "react-redux";
+import { showSnackbar } from "actions/snackbar.action";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import List from "@mui/material/List";
@@ -27,7 +29,7 @@ let schema = yup.object().shape({
 });
 
 export default function ModalInvite({ open, onClose, id }) {
-	// const dispatch = useDispatch();
+	const dispatch = useDispatch();
 	const [listEmail, setListEmail] = useState([]);
 	const {
 		register,
@@ -55,8 +57,13 @@ export default function ModalInvite({ open, onClose, id }) {
 			classId: id,
 			inviteEmail: listEmail.length > 0 ? listEmail : undefined,
 		};
-		await ClassesService.inviteToClass(body);
-		onClose();
+		ClassesService.inviteToClass(body)
+			.catch((err) => {
+				dispatch(showSnackbar(String(err)));
+			})
+			.finally(() => {
+				onClose();
+			});
 	};
 	return (
 		<Dialog open={open} onClose={onClose} fullWidth={true} maxWidth={"sm"}>

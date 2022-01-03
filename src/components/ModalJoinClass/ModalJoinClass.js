@@ -9,19 +9,22 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-
-// import { useDispatch } from "react-redux";
+import ClassesService from "services/classes.service";
+import { setClasses } from "actions/classes.action";
+import { useDispatch } from "react-redux";
+import { showSnackbar } from "actions/snackbar.action";
 
 let schema = yup.object().shape({
 	classCode: yup.string().trim().required(),
 });
 
 export default function ModalJoinClass({ open, onClose }) {
-	// const dispatch = useDispatch();
+	const dispatch = useDispatch();
 
 	const {
 		register,
 		handleSubmit,
+		getValues,
 		formState: { isValid },
 	} = useForm({
 		mode: "onChange",
@@ -29,11 +32,18 @@ export default function ModalJoinClass({ open, onClose }) {
 	});
 
 	const onSubmit = async (data) => {
-		console.log(
-			"🚀 ~ file: ModalJoinClass.js ~ line 32 ~ onSubmit ~ data",
-			data
-		);
-		onClose();
+		// gg8zWRMs
+		ClassesService.joinByCode(getValues("classCode"))
+			.then(() => {
+				dispatch(setClasses());
+			})
+			.catch((err) => {
+				dispatch(showSnackbar(String(err)));
+			})
+			.finally(() => {
+				onClose();
+				window.location.reload(false);
+			});
 	};
 
 	return (

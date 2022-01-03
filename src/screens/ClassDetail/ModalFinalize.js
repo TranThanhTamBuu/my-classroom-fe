@@ -15,7 +15,7 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 
-export default function ModalFinalizeGrade({ open, onClose, gradeList }) {
+export default function ModalFinalizeGrade({ open, onClose, gradeList,setGradeBoard }) {
 	const [state, setState] = useState(gradeList);
 	const [isLoading, setLoading] = useToggle(false);
 	let listItems = [];
@@ -28,15 +28,7 @@ export default function ModalFinalizeGrade({ open, onClose, gradeList }) {
 			isFinalized: value.isFinalized,
 		});
 	}
-	const onClickSave = async () => {
-		// setLoading(true);
-		// for (const [key, value] of Object.entries(state)) {
-		// 	// if(value !== gradeList.)
-		// }
-		// await ClassesService.updateAssignment(data);
-		// setLoading(false);
-		// onClose();
-	};
+
 	const handleChange = async (event) => {
 		setLoading(true);
 
@@ -46,6 +38,7 @@ export default function ModalFinalizeGrade({ open, onClose, gradeList }) {
 			await ClassesService.markFinalizedGrade(event.target.id);
 		else await ClassesService.unmarkFinalizedGrade(event.target.id);
 		copyState[event.target.name].isFinalized = isFinalized;
+		setGradeBoard();
 		setLoading(false);
 		setState({
 			...copyState,

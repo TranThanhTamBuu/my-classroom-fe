@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useToggle } from "react-use";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import Avatar from "@mui/material/Avatar";
 import OutlinedInput from "@mui/material/OutlinedInput";
@@ -16,6 +17,7 @@ import ClassesService from "services/classes.service";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { IconButton } from "@mui/material";
 import ModalSetFinalGrade from "./ModalSetFinalGrade";
+import { showSnackbar } from "actions/snackbar.action";
 const Card = styled.div`
 	background: #fff;
 	border-radius: 2rem;
@@ -99,6 +101,7 @@ let schema = yup.object().shape({
 });
 
 export default function RequestReviewCard(props) {
+	const dispatch = useDispatch();
 	const [loading, setLoading] = useToggle(false);
 	const [openModal, setModal] = useToggle(false);
 	const classDetail = useSelector((state) => state.classDetail);
@@ -108,6 +111,7 @@ export default function RequestReviewCard(props) {
 	const author = classDetail.students.find(
 		(student) => student.studentId === state.studentId
 	);
+
 	console.log(state);
 	let studentComment = state.studentComment;
 	let listComment = [
@@ -147,26 +151,34 @@ export default function RequestReviewCard(props) {
 				studentId: author.studentId,
 				assignmentId: state.id,
 			};
-			let res = await ClassesService.teacherComment(body);
-			let newList = state.teacherComment.slice();
-			newList.push({
-				comment: comment,
-				time: Math.floor(Date.now() / 1000),
-				teacherId: user._id,
-			});
-			setState({ ...state, teacherComment: newList });
+			try {
+				let res = await ClassesService.teacherComment(body);
+				let newList = state.teacherComment.slice();
+				newList.push({
+					comment: comment,
+					time: Math.floor(Date.now() / 1000),
+					teacherId: user._id,
+				});
+				setState({ ...state, teacherComment: newList });
+			} catch (err) {
+				dispatch(showSnackbar(String(err)));
+			}
 		} else {
 			const body = {
 				studentComment: comment,
 				assignmentId: state.id,
 			};
-			let res = await ClassesService.studentComment(body);
-			let newList = state.studentComment.slice();
-			newList.push({
-				comment: comment,
-				time: Math.floor(Date.now() / 1000),
-			});
-			setState({ ...state, studentComment: newList });
+			try {
+				let res = await ClassesService.studentComment(body);
+				let newList = state.studentComment.slice();
+				newList.push({
+					comment: comment,
+					time: Math.floor(Date.now() / 1000),
+				});
+				setState({ ...state, studentComment: newList });
+			} catch (err) {
+				dispatch(showSnackbar(String(err)));
+			}
 		}
 		setLoading(false);
 	};
@@ -176,7 +188,7 @@ export default function RequestReviewCard(props) {
 			<Card>
 				<Header>
 					<User>
-						<Avatar {...stringAvatar("Hello")} />
+						<Avatar {...stringAvatar(author.name)} />
 						<div>
 							<p>{author.name}</p>
 							<p>{author.studentId}</p>
@@ -213,6 +225,8 @@ export default function RequestReviewCard(props) {
 				<p>{`Explain: ${studentComment[0].comment}`}</p>
 				{!state.isFinal && (
 					<>
+						<hr />
+
 						<Input
 							sx={{ py: "8px" }}
 							fullWidth
@@ -232,7 +246,6 @@ export default function RequestReviewCard(props) {
 								</InputAdornment>
 							}
 						/>
-						<hr />
 					</>
 				)}
 				<hr />

@@ -27,6 +27,8 @@ import {
 import { useToggle } from "react-use";
 import { getComparator } from "utils/sort.util";
 import dayjs from "dayjs";
+import { useHistory } from "react-router";
+import { RouteUrl } from "constants/router";
 
 const headCells = [
 	{
@@ -88,6 +90,7 @@ export default function UsersTable({ isAdmin }) {
 	const [changeStudentIdOfUserId, setChangeStudentIdOfUserId] = useState("");
 	const [loadingConfirmAction, setLoadingConfirmAction] = useState(false);
 	const [search, setSearch] = useState("");
+	const history = useHistory();
 
 	const fetchData = async () => {
 		const response = isAdmin

@@ -1,12 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Box from "@mui/material/Box";
-import { Container, Typography } from "@mui/material";
 import { useToggle } from "react-use";
 import { Paper } from "@mui/material";
-import ClassesService from "services/classes.service";
-import MuiAlert from "@mui/material/Alert";
-import { Stack } from "@mui/material";
-import { useSelector } from "react-redux";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -17,12 +12,7 @@ import { Button } from "@mui/material";
 import ModalRequestReview from "./ModalRequestReview";
 import ListRequestReview from "./ListRequestReview";
 
-const SnackbarAlert = React.forwardRef(function Alert(props, ref) {
-	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-
 export default function StudentGradePanel(props) {
-	const classDetail = useSelector((state) => state.classDetail);
 	const [openModal, setOpenModal] = useToggle(false);
 	let gradeList = [];
 	for (const [key, value] of Object.entries(props.gradeBoard.data)) {

@@ -16,17 +16,17 @@ export default function AssignmentTable({
 	onClickCancelEdit,
 	onClickSaveEdit,
 	handleOnDragEnd,
-	isStudent,
+	isTeacher,
 }) {
 	return (
 		<TableContainer component={Paper}>
 			<Table sx={{ minWidth: 200 }} aria-label="simple table">
 				<TableHead>
 					<TableRow>
-					{!isStudent && <TableCell></TableCell>}
+						{isTeacher && <TableCell></TableCell>}
 						<TableCell align="center">Name</TableCell>
 						<TableCell align="center">Point</TableCell>
-						{!isStudent && (
+						{isTeacher && (
 							<TableCell align="center">Action</TableCell>
 						)}
 					</TableRow>
@@ -81,7 +81,7 @@ export default function AssignmentTable({
 														onClickSaveEdit={
 															onClickSaveEdit
 														}
-														isStudent={isStudent}
+														isTeacher={isTeacher}
 													/>
 												</TableRow>
 											);

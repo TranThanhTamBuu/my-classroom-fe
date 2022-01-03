@@ -1,8 +1,4 @@
 import React, { useState } from "react";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Button } from "@mui/material";
 import { useToggle } from "react-use";
 import { Popper } from "@material-ui/core";
@@ -24,7 +20,12 @@ const SnackbarAlert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function DetailPanel({ classDetail, inviteLink, id }) {
+export default function DetailPanel({
+	classDetail,
+	inviteLink,
+	id,
+	getGradeboard,
+}) {
 	const [addAnchorEl, setAddAnchorEl] = useState(false);
 	const [addPopper, toggleAddPopper] = useToggle(false);
 	const [modalInvite, toggleModalInvite] = useToggle(false);
@@ -40,26 +41,30 @@ export default function DetailPanel({ classDetail, inviteLink, id }) {
 	};
 	return (
 		<>
-			<Accordion>
-				<Styled.MyContainer>
-					<AccordionSummary
-						expandIcon={<MoreVertIcon />}
-						aria-controls="panel1a-content"
-						id="panel1a-header"
-					>
-						<Typography color="white" noWrap variant="h4">
-							{classDetail.name}
-						</Typography>
-					</AccordionSummary>
-				</Styled.MyContainer>
-				<AccordionDetails>
-					<Typography>{"Subject: " + classDetail.subject}</Typography>
-					<Typography>{"Section: " + classDetail.section}</Typography>
-					<Typography>{"Room: " + classDetail.room}</Typography>
-				</AccordionDetails>
-			</Accordion>
+			<Styled.MyContainer>
+				<Box>
+					<Typography color="white" noWrap variant="h4">
+						{classDetail.name}
+					</Typography>
+				</Box>
+			</Styled.MyContainer>
+			<div
+				style={{
+					background: "white",
+					padding: "1rem",
+					boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
+				}}
+			>
+				<Typography>{"Subject: " + classDetail.subject}</Typography>
+				<Typography>{"Section: " + classDetail.section}</Typography>
+				<Typography>{"Room: " + classDetail.room}</Typography>
+			</div>
 			<Box sx={{ mt: 3 }} display="flex">
 				<Stack spacing={2} sx={{ flexGrow: 1, mr: 3 }}>
+					<Paper sx={{ p: 2 }}>
+						<Typography>Class code</Typography>
+						<b style={{color: "#1967d2"}}>{classDetail.enterCode}</b>
+					</Paper>
 					{inviteLink && (
 						<Button
 							variant="contained"
@@ -69,13 +74,6 @@ export default function DetailPanel({ classDetail, inviteLink, id }) {
 							Class Invitation Link
 						</Button>
 					)}
-					<Button
-						variant="contained"
-						sx={{ width: "85%" }}
-						onClick={handleClickClassGrade}
-					>
-						Class Grade Structure
-					</Button>
 
 					<Popper
 						open={addPopper}
@@ -124,19 +122,23 @@ export default function DetailPanel({ classDetail, inviteLink, id }) {
 						)}
 					</Popper>
 				</Stack>
-				<Stack spacing={2} sx={{ flexGrow: 9 }}></Stack>
+				<Stack spacing={2} sx={{ flexGrow: 9 }}>
+					{" "}
+					<ModalClassGrade
+						isStudent={user.studentId.length > 0}
+						open={modalClassGrade}
+						onClose={() => toggleModalClassGrade(false)}
+						id={classDetail._id}
+						getGradeboard={getGradeboard}
+					/>
+				</Stack>
 			</Box>
 			<ModalInvite
 				open={modalInvite}
 				onClose={() => toggleModalInvite(false)}
 				id={id}
 			/>
-			<ModalClassGrade
-				isStudent={user.studentId.length > 0}
-				open={modalClassGrade}
-				onClose={() => toggleModalClassGrade(false)}
-				id={classDetail._id}
-			/>
+
 			<Snackbar
 				open={openCopyLinkAlert}
 				autoHideDuration={6000}

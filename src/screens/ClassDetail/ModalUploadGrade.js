@@ -40,7 +40,6 @@ export default function ModalUploadGrade({
 			readExcel(file);
 		},
 	});
-
 	const readExcel = (file) => {
 		// eslint-disable-next-line no-undef
 		const fileReader = new FileReader();
@@ -116,12 +115,14 @@ export default function ModalUploadGrade({
 						label="Assignment"
 						onChange={handleChange}
 					>
-						{listAssignment.map((assignment) => (
-							<MenuItem
-								key={assignment.id}
-								value={assignment}
-							>{`${assignment.name}`}</MenuItem>
-						))}
+						{listAssignment
+							.filter((assignment) => !assignment.isFinal)
+							.map((assignment) => (
+								<MenuItem
+									key={assignment.id}
+									value={assignment}
+								>{`${assignment.name}`}</MenuItem>
+							))}
 					</Select>
 				</FormControl>
 				<Paper>

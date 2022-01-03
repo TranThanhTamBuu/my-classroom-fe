@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -13,6 +14,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import ClassesService from "services/classes.service";
 import { useParams } from "react-router-dom";
 import { useToggle } from "react-use";
+import { showSnackbar } from "actions/snackbar.action";
 
 export default function ModalSetFinalGrade({
 	open,
@@ -22,7 +24,7 @@ export default function ModalSetFinalGrade({
 	setState,
 }) {
 	const [isLoading, setLoading] = useToggle(false);
-
+	const dispatch = useDispatch();
 	let schema = yup.object().shape({
 		point: yup
 			.number()
@@ -49,12 +51,17 @@ export default function ModalSetFinalGrade({
 			newGrade: getValues("point"),
 			markAsFinal: true,
 		};
-		const res = await ClassesService.teacherComment(data);
-		console.log(res);
-		setLoading(false);
-		onClose();
-
-		setState({ ...state, isFinal: true });
+		ClassesService.teacherComment(data)
+			.then(() => {
+				setState({ ...state, isFinal: true });
+			})
+			.catch((err) => {
+				dispatch(showSnackbar(String(err)));
+			})
+			.finally(() => {
+				setLoading(false);
+				onClose();
+			});
 	};
 
 	return (

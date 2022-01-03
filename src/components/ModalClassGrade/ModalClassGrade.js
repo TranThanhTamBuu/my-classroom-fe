@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
+import { useDispatch } from "react-redux";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -11,9 +12,10 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import LoadingButton from "@mui/lab/LoadingButton";
 import ClassesService from "services/classes.service";
-
+import { useSelector } from "react-redux";
 import AssignmentTable from "../AssignmentTable";
 import { useToggle } from "react-use";
+import { showSnackbar } from "actions/snackbar.action";
 let schema = yup.object().shape({
 	name: yup.string().trim().required("Name must not be empty"),
 	point: yup
@@ -22,9 +24,17 @@ let schema = yup.object().shape({
 		.positive("Point must be positive"),
 });
 
-export default function ModalClassGrade({ open, onClose, id, isStudent }) {
+export default function ModalClassGrade({
+	open,
+	onClose,
+	id,
+	isStudent,
+	getGradeboard,
+}) {
 	const [listGrade, setListGrade] = useState([]);
+	const dispatch = useDispatch();
 	const [isLoading, setLoading] = useToggle(false);
+	const user = useSelector((state) => state.user);
 	const {
 		register,
 		setValue,
@@ -35,7 +45,7 @@ export default function ModalClassGrade({ open, onClose, id, isStudent }) {
 		defaultValues: { name: "", point: 0 },
 		resolver: yupResolver(schema),
 	});
-
+	let defaultGradeStructure = [];
 	useEffect(() => {
 		async function getAssignment() {
 			let listAssignment = await ClassesService.getAllAssignments(id);
@@ -45,6 +55,7 @@ export default function ModalClassGrade({ open, onClose, id, isStudent }) {
 				.map((e) => {
 					return { name: e.title, point: e.totalPoint, id: e._id };
 				});
+			defaultGradeStructure = listAssignment.slice();
 			setListGrade(listAssignment);
 		}
 		getAssignment();
@@ -89,7 +100,6 @@ export default function ModalClassGrade({ open, onClose, id, isStudent }) {
 		editedRow["name"] = newValue.name;
 		editedRow["point"] = newValue.point;
 
-		console.log(newValue);
 		setListGrade(
 			listGradeCopy.map((e, i) => (index === i ? editedRow : e))
 		);
@@ -108,10 +118,15 @@ export default function ModalClassGrade({ open, onClose, id, isStudent }) {
 				};
 			}),
 		};
-		console.log(data);
-		await ClassesService.updateAssignment(data);
-		setLoading(false);
-		onClose();
+		try {
+			await ClassesService.updateAssignment(data);
+			await getGradeboard();
+		} catch (err) {
+			dispatch(showSnackbar(String(err)));
+		} finally {
+			setLoading(false);
+			onClose();
+		}
 	};
 	const handleOnDragEnd = (result) => {
 		if (!result.destination) return;
@@ -124,9 +139,10 @@ export default function ModalClassGrade({ open, onClose, id, isStudent }) {
 	};
 
 	return (
-		<Dialog open={open} onClose={onClose} fullWidth={true} maxWidth={"md"}>
-			<DialogTitle>Join class</DialogTitle>
-			<DialogContent>
+		// <Dialog open={open} onClose={onClose} fullWidth={true} maxWidth={"md"}>
+		// 	<DialogTitle>Join class</DialogTitle>
+		<div>
+			<div>
 				<AssignmentTable
 					onClickDelete={onClickDelete}
 					items={listGrade}
@@ -135,9 +151,9 @@ export default function ModalClassGrade({ open, onClose, id, isStudent }) {
 					onClickCancelEdit={onClickCancelEdit}
 					onClickSaveEdit={onClickSaveEdit}
 					handleOnDragEnd={handleOnDragEnd}
-					isStudent={isStudent}
+					isTeacher={!isStudent && !user.isAdmin}
 				/>
-				{!isStudent && (
+				{!isStudent && !user.isAdmin && (
 					<>
 						<TextField
 							autoFocus
@@ -164,24 +180,25 @@ export default function ModalClassGrade({ open, onClose, id, isStudent }) {
 						/>
 					</>
 				)}
-			</DialogContent>
-			<DialogActions>
-				<Button onClick={onClose}>
-					<Typography variant="button">
-						{isStudent ? "Close" : "Cancel"}
-					</Typography>
-				</Button>
-				{!isStudent && (
+			</div>
+			<div>
+				{!isStudent && !user.isAdmin && (
 					<>
-						<Button disabled={!isValid} onClick={onClickAdd}>
+						<Button
+							disabled={!isValid}
+							onClick={onClickAdd}
+							variant="contained"
+							sx={{ mr: 2 }}
+						>
 							<Typography variant="button">Add</Typography>
 						</Button>
 						<LoadingButton
 							loading={isLoading}
 							loadingPosition="center"
-							variant="button"
+							variant="contained"
 							disabled={
-								listGrade.length === 0 ||
+								(defaultGradeStructure.length &&
+									listGrade.length === 0) ||
 								listGrade.some((e) => e.isEditMode === true)
 							}
 							onClick={onClickSave}
@@ -190,7 +207,8 @@ export default function ModalClassGrade({ open, onClose, id, isStudent }) {
 						</LoadingButton>
 					</>
 				)}
-			</DialogActions>
-		</Dialog>
+			</div>
+		</div>
+		// </Dialog>
 	);
 }

@@ -28,7 +28,7 @@ export default function ListRequestReview(props) {
 				const res = await ClassesService.getListReviewRequest(item.id);
 
 				console.log(res);
-				if (Object.keys(res.data).length !== 0) {
+				if (res.data && Object.keys(res.data).length !== 0) {
 					if (isTeacher) {
 						for (const [key, value] of Object.entries(res.data)) {
 							listRequest.push({
@@ -65,7 +65,10 @@ export default function ListRequestReview(props) {
 		<Container>
 			<h2>List Request Review</h2>
 			{state.map((item) => (
-				<RequestReviewCard content={item} />
+				<RequestReviewCard
+					key={`${item.id}${item.name}`}
+					content={item}
+				/>
 			))}
 		</Container>
 	);

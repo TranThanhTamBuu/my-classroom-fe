@@ -1,6 +1,6 @@
 import React from "react";
 import * as Styled from "./AppLayout.styled";
-import { MyAppBar, MyDrawer } from "components";
+import { ErrorSnackbar, MyAppBar, MyDrawer } from "components";
 import { useToggle } from "react-use";
 
 export default function AppLayout({ children }) {
@@ -10,6 +10,7 @@ export default function AppLayout({ children }) {
 			<MyDrawer open={drawer} onClose={() => toggleDrawer(false)} />
 			<MyAppBar openDrawer={() => toggleDrawer(true)} />
 			<Styled.MyContainer disableGutters>{children}</Styled.MyContainer>
+			<ErrorSnackbar />
 		</Styled.Wrapper>
 	);
 }

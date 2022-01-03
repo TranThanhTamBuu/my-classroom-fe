@@ -13,6 +13,7 @@ import DetailPanel from "./DetailPanel";
 import PeoplePanel from "./PeoplePanel";
 import GradePanel from "./GradePanel";
 import { setClassDetail, removeClassDetail } from "actions/classDetail.action";
+import { showSnackbar } from "actions/snackbar.action";
 import { useSelector, useDispatch } from "react-redux";
 import StudentGradePanel from "./StudentGradePanel";
 
@@ -50,23 +51,25 @@ export default function ClassDetail() {
 	const [inviteLink, setInviteLink] = useState("");
 	const [openError, setOpenErrorModal] = useState(false);
 	const [gradeBoard, setGradeBoard] = useState([]);
-	const [listRequest, setListRequest] = useState([]);
 	const user = useSelector((state) => state.user);
-	const isTeacher = user.studentId === "";
+	const isTeacher = user.studentId === "" && !user.isAdmin;
 	const classDetail = useSelector((state) => state.classDetail);
 	const { id } = useParams();
+
+	async function getGradeboard() {
+		let grade;
+		if (isTeacher) grade = await ClassesService.getGradeboard(id);
+		else grade = await ClassesService.getStudentGradeboard(id);
+		console.log(grade);
+		setGradeBoard(grade);
+	}
 
 	useEffect(() => {
 		async function getDetailClass() {
 			let data = await ClassesService.getDetailClass(id);
-			dispatch(setClassDetail(data));
 			// let listRequest = await ClassesService.getListReviewRequest(id);
-			// console.log(listRequest);
-			let grade;
-			if (isTeacher) grade = await ClassesService.getGradeboard(id);
-			else grade = await ClassesService.getStudentGradeboard(id);
-			console.log(grade);
-			setGradeBoard(grade);
+			console.log(data);
+			if (!user.isAdmin) await getGradeboard();
 			try {
 				let inviteLink = await ClassesService.inviteToClass({
 					classId: id,
@@ -75,6 +78,7 @@ export default function ClassDetail() {
 			} catch (err) {
 				console.log(err);
 			}
+			dispatch(setClassDetail(data));
 		}
 		getDetailClass();
 		return () => {
@@ -103,23 +107,26 @@ export default function ClassDetail() {
 						classDetail={classDetail}
 						inviteLink={inviteLink}
 						id={id}
+						getGradeboard={getGradeboard}
 					/>
 				</TabPanel>
-				<TabPanel value={tabIndex} index={1}>
-					{isTeacher ? (
-						<GradePanel
-							gradeBoard={gradeBoard}
-							setGradeBoard={async () => {
-								let grade = await ClassesService.getGradeboard(
-									id
-								);
-								setGradeBoard(grade);
-							}}
-						/>
-					) : (
-						<StudentGradePanel gradeBoard={gradeBoard} />
-					)}
-				</TabPanel>
+				{!user.isAdmin && (
+					<TabPanel value={tabIndex} index={1}>
+						{isTeacher || user.isAdmin ? (
+							<GradePanel
+								gradeBoard={gradeBoard}
+								setGradeBoard={async () => {
+									let grade =
+										await ClassesService.getGradeboard(id);
+									setGradeBoard(grade);
+								}}
+							/>
+						) : (
+							<StudentGradePanel gradeBoard={gradeBoard} />
+						)}
+					</TabPanel>
+				)}
+
 				<TabPanel value={tabIndex} index={2}>
 					<PeoplePanel classDetail={classDetail} />
 				</TabPanel>
@@ -135,7 +142,9 @@ export default function ClassDetail() {
 						}}
 					>
 						<BottomNavigationAction label="Detail" />
-						<BottomNavigationAction label="Grade" />
+						{!user.isAdmin && (
+							<BottomNavigationAction label="Grade" />
+						)}
 						<BottomNavigationAction label="People" />
 					</BottomNavigation>
 				</Paper>

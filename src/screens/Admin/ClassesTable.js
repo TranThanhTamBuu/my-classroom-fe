@@ -23,6 +23,8 @@ import IconButton from "@mui/material/IconButton";
 import LinkIcon from "@mui/icons-material/Link";
 import Chip from "@mui/material/Chip";
 import SearchIcon from "@mui/icons-material/Search";
+import { useHistory } from "react-router";
+import { RouteUrl } from "constants/router";
 
 const headCells = [
 	{
@@ -87,7 +89,7 @@ export default function ClassesTable() {
 	const [isActivate, setIsActivate] = useToggle(true);
 	const [loadingConfirmAction, setLoadingConfirmAction] = useState(false);
 	const [search, setSearch] = useState("");
-
+	const history = useHistory();
 	const fetchData = async () => {
 		const response = await ClassesService.getAllClasses();
 		setRows(
@@ -323,7 +325,11 @@ export default function ClassesTable() {
 												</TableCell>
 												<TableCell align="right">
 													<IconButton
-														onClick={() => {}}
+														onClick={() => {
+															history.push(
+																`${RouteUrl.CLASS}/${row.classId}`
+															);
+														}}
 													>
 														<LinkIcon />
 													</IconButton>

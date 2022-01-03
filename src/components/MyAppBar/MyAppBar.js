@@ -177,11 +177,13 @@ export default function MyAppBar({ openDrawer }) {
 													id="composition-menu"
 													aria-labelledby="composition-button"
 												>
-													<MenuItem
-														onClick={onAdminPanelClick()}
-													>
-														Admin Panel
-													</MenuItem>
+													{user.isAdmin && (
+														<MenuItem
+															onClick={onAdminPanelClick()}
+														>
+															Admin Panel
+														</MenuItem>
+													)}
 													<MenuItem
 														onClick={onSettingClick()}
 													>

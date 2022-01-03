@@ -55,7 +55,10 @@ export default function Authentication() {
 	}, [authentication]);
 
 	useEffect(() => {
-		if (user) return history.push("/classes");
+		if (user) {
+			if (user.isAdmin) return history.push("/admin");
+			return history.push("/classes");
+		}
 	}, [user]);
 
 	return (

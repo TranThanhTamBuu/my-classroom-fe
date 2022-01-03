@@ -49,29 +49,34 @@ export default function GradePanel(props) {
 		},
 	});
 	useEffect(() => {
-		apiRef.current.subscribeEvent(GridEvents.cellEditCommit, (params) => {
-			setBackDrop(true);
-			ClassesService.setListGrade({
-				assignmentId: props.gradeBoard.maxPoint[params.field].id,
-				isImport: false,
-				listGrade: [
-					{
-						grade: params.value,
-						studentId: params.id,
-					},
-				],
-			})
-				.then(() => {
-					console.log("edit success");
-					props.setGradeBoard();
-				})
-				.catch((err) => {
-					console.log(err);
-				})
-				.finally(() => {
-					setBackDrop(false);
-				});
-		});
+		if (listGrade.length > 0)
+			apiRef.current.subscribeEvent(
+				GridEvents.cellEditCommit,
+				(params) => {
+					setBackDrop(true);
+					ClassesService.setListGrade({
+						assignmentId:
+							props.gradeBoard.maxPoint[params.field].id,
+						isImport: false,
+						listGrade: [
+							{
+								grade: params.value,
+								studentId: params.id,
+							},
+						],
+					})
+						.then(() => {
+							console.log("edit success");
+							props.setGradeBoard();
+						})
+						.catch((err) => {
+							console.log(err);
+						})
+						.finally(() => {
+							setBackDrop(false);
+						});
+				}
+			);
 	}, [apiRef]);
 	const readExcel = (file) => {
 		// eslint-disable-next-line no-undef
@@ -100,8 +105,9 @@ export default function GradePanel(props) {
 							id: student.StudentID,
 						};
 					}),
+				}).then(() => {
+					props.setGradeBoard();
 				});
-				props.setGradeBoard();
 			}
 		};
 
@@ -117,6 +123,7 @@ export default function GradePanel(props) {
 			maxPoint: value.point,
 			id: value.id,
 			position: value.index,
+			isFinal: value.isFinalized
 		});
 	}
 	assignmentsColumn = assignmentsColumn.sort(
@@ -155,7 +162,7 @@ export default function GradePanel(props) {
 			return {
 				field: key.name,
 				width: 120,
-				editable: !classDetail.isFinalized,
+				editable: true,
 				headerAlign: "center",
 				align: "center",
 				type: "number",
@@ -197,7 +204,7 @@ export default function GradePanel(props) {
 				let sum = 0;
 				assignmentsColumn.forEach((cur) => {
 					let v1 = params.getValue(params.id, cur.name) ?? 0;
-					sum += v1;
+					sum += parseInt(v1);
 				});
 				return sum;
 			},
@@ -306,6 +313,7 @@ export default function GradePanel(props) {
 							setOpenFinalizedModal(false);
 						}}
 						gradeList={props.gradeBoard.maxPoint}
+						setGradeBoard={props.setGradeBoard}
 					/>
 				</>
 			) : (

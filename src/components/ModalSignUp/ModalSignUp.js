@@ -83,6 +83,7 @@ export default function ModalSignUp() {
 	const onSubmit = async (data) => {
 		setActivation("");
 		const response = await AuthService.signUp(data);
+
 		if (response.statusCode) {
 			setServerError(
 				response.statusCode === AUTH_VALIDATION.CODE_CONFLICT
