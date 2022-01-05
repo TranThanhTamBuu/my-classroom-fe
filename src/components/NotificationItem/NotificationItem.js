@@ -6,6 +6,8 @@ import Avatar from "@mui/material/Avatar";
 import MenuItem from "@mui/material/MenuItem";
 import BaseBadge from "@mui/material/Badge";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
+import { useHistory } from "react-router";
+import { RouteUrl } from "constants/router";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -25,7 +27,10 @@ export default function NotificationItem({
 	createdAt,
 	isRead,
 	readNotification,
+	classId,
 }) {
+	const history = useHistory();
+
 	return (
 		<Tooltip
 			arrow
@@ -44,6 +49,10 @@ export default function NotificationItem({
 			<MenuItem
 				onClick={() => {
 					if (!isRead) readNotification();
+					setTimeout(() => {
+						if (classId)
+							history.push(`${RouteUrl.CLASS}/${classId}`);
+					}, 1500);
 				}}
 			>
 				<DescriptionBadge

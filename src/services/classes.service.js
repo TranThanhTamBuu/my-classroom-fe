@@ -151,6 +151,11 @@ const reGenCode = async () => {
 
 	return res.data;
 };
+const getClassesbyUser = async (id) => {
+	const res = await rest.get(`${URL}/list-classes/${id}`);
+	console.log(res);
+	return res.data;
+};
 export default {
 	getClasses,
 	createClass,
@@ -177,4 +182,5 @@ export default {
 	teacherComment,
 	reGenCode,
 	joinByCode,
+	getClassesbyUser,
 };

@@ -192,7 +192,7 @@ export default function MyAppBar({ openDrawer }) {
 								</Popper>
 							</div>
 						)}
-						<div>
+						<div style={{ zIndex: 3 }}>
 							<IconButton
 								size="large"
 								color="inherit"

@@ -27,9 +27,7 @@ import {
 import { useToggle } from "react-use";
 import { getComparator } from "utils/sort.util";
 import dayjs from "dayjs";
-import { useHistory } from "react-router";
-import { RouteUrl } from "constants/router";
-
+import ModalListClassesOfUser from "./ModalListClassesOfUser";
 const headCells = [
 	{
 		id: "email",
@@ -90,7 +88,7 @@ export default function UsersTable({ isAdmin }) {
 	const [changeStudentIdOfUserId, setChangeStudentIdOfUserId] = useState("");
 	const [loadingConfirmAction, setLoadingConfirmAction] = useState(false);
 	const [search, setSearch] = useState("");
-	const history = useHistory();
+	const [userId, setUserId] = useState("");
 
 	const fetchData = async () => {
 		const response = isAdmin
@@ -364,7 +362,11 @@ export default function UsersTable({ isAdmin }) {
 														<EditIcon />
 													</IconButton>
 													<IconButton
-														onClick={() => {}}
+														onClick={() => {
+															setUserId(
+																row.userId
+															);
+														}}
 													>
 														<LinkIcon />
 													</IconButton>
@@ -422,6 +424,11 @@ export default function UsersTable({ isAdmin }) {
 					setLoadingConfirmAction(false);
 				}}
 				loading={loadingConfirmAction}
+			/>
+			<ModalListClassesOfUser
+				open={userId.length > 0}
+				onClose={() => setUserId("")}
+				userId={userId}
 			/>
 		</>
 	);
