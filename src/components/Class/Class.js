@@ -70,24 +70,7 @@ export default function Class({ item }) {
 						marginTop: "84px",
 						padding: "16px 0 16px 0",
 					}}
-				>
-					<Typography variant="body2" color="text.secondary" noWrap>
-						Due Wednesday
-					</Typography>
-					<Typography
-						variant="body2"
-						color="text.primary"
-						sx={{
-							":hover": {
-								textDecoration: "underline",
-								cursor: "pointer",
-							},
-						}}
-						noWrap
-					>
-						10:00 PM – BTCN03 - Listing and creating classes
-					</Typography>
-				</CardContent>
+				></CardContent>
 				<Box sx={{ width: "calc(100% + 32px)", marginLeft: "-16px" }}>
 					<Divider />
 					<CardActions

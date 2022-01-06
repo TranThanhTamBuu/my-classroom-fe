@@ -6,6 +6,11 @@ export const TitleContainer = styled.div`
 	display: flex;
 	justify-content: space-between;
 	width: 100%;
+	& a {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		width: 90%;
+	}
 `;
 
 export const HeaderWrapper = styled.div`

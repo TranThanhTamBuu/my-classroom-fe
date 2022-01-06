@@ -232,7 +232,7 @@ export default function GradePanel(props) {
 										assignmentsColumn.forEach((cur) => {
 											let col = cur.name;
 											let v1 = student[col] ?? 0;
-											sum += v1;
+											sum += parseInt(v1);
 										});
 										return {
 											...student,

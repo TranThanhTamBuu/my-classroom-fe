@@ -180,9 +180,9 @@ export default function UsersTable({ isAdmin }) {
 		else {
 			const re = new RegExp(search, "i");
 			return (
-				row.name.search(re) !== -1 ||
-				row.email.search(re) !== -1 ||
-				row.studentId.search(re) !== -1
+				row.name?.search(re) !== -1 ||
+				row.email?.search(re) !== -1 ||
+				(row.studentId && row.studentId?.search(re) !== -1)
 			);
 		}
 	};

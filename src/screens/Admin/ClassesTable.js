@@ -175,9 +175,9 @@ export default function ClassesTable() {
 			const re = new RegExp(search, "i");
 			return (
 				row.name.search(re) !== -1 ||
-				row.subject?.search(re) !== -1 ||
-				row.section?.search(re) !== -1 ||
-				row.room?.search(re) !== -1 ||
+				(row.subject && row.subject?.search(re) !== -1) ||
+				(row.section && row.section?.search(re) !== -1) ||
+				(row.room && row.room?.search(re) !== -1) ||
 				row.createdBy.search(re) !== -1
 			);
 		}

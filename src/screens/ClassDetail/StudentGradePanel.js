@@ -26,85 +26,93 @@ export default function StudentGradePanel(props) {
 	gradeList = gradeList.sort((a, b) => a.position - b.position);
 
 	return (
-		<>
-			<Box sx={{ mb: 2 }}>
-				<Button
-					variant="contained"
-					onClick={() => {
-						setOpenModal(true);
-					}}
-				>
-					Request Grade Review
-				</Button>
-			</Box>
-			<TableContainer component={Paper}>
-				<Table size="small" aria-label="simple table">
-					<TableHead>
-						<TableRow>
-							{gradeList.map((grade) => (
-								<TableCell
-									sx={{ p: 1 }}
-									align="center"
-									key={`Header${grade.name}`}
-								>
-									{grade.name}
-								</TableCell>
-							))}
-							<TableCell
-								sx={{ p: 1 }}
-								align="center"
-								key={`HeaderTotal`}
-							>
-								Total
-							</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						<TableRow>
-							{gradeList.map((grade) => (
-								<TableCell
-									align="center"
-									sx={{ p: 1 }}
-									key={`Value${grade.name}`}
-								>
-									{grade.studentPoint
-										? grade.studentPoint
-										: ""}
-								</TableCell>
-							))}
-							<TableCell
-								align="center"
-								sx={{ p: 1 }}
-								key={`ValueTotal`}
-							>
-								{gradeList.every(
-									(item) =>
-										item.studentPoint !== null &&
-										item.studentPoint !== undefined
-								)
-									? gradeList.reduce((a, b) => {
-											return {
-												studentPoint:
-													a.studentPoint +
-													b.studentPoint,
-											};
-									  }).studentPoint
-									: ""}
-							</TableCell>
-						</TableRow>
-					</TableBody>
-				</Table>
-			</TableContainer>
-			<ListRequestReview
-				gradeList={gradeList.filter((item) => item.isReviewRequest)}
-			/>
-			<ModalRequestReview
-				open={openModal}
-				onClose={() => {
-					setOpenModal(false);
-				}}
-				gradeList={gradeList}
-			/>
-		</>
+		<div>
+			{gradeList.length > 0 ? (
+				<>
+					<Box sx={{ mb: 2 }}>
+						<Button
+							variant="contained"
+							onClick={() => {
+								setOpenModal(true);
+							}}
+						>
+							Request Grade Review
+						</Button>
+					</Box>
+					<TableContainer component={Paper}>
+						<Table size="small" aria-label="simple table">
+							<TableHead>
+								<TableRow>
+									{gradeList.map((grade) => (
+										<TableCell
+											sx={{ p: 1 }}
+											align="center"
+											key={`Header${grade.name}`}
+										>
+											{grade.name}
+										</TableCell>
+									))}
+									<TableCell
+										sx={{ p: 1 }}
+										align="center"
+										key={`HeaderTotal`}
+									>
+										Total
+									</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								<TableRow>
+									{gradeList.map((grade) => (
+										<TableCell
+											align="center"
+											sx={{ p: 1 }}
+											key={`Value${grade.name}`}
+										>
+											{grade.studentPoint
+												? grade.studentPoint
+												: ""}
+										</TableCell>
+									))}
+									<TableCell
+										align="center"
+										sx={{ p: 1 }}
+										key={`ValueTotal`}
+									>
+										{gradeList.every(
+											(item) =>
+												item.studentPoint !== null &&
+												item.studentPoint !== undefined
+										)
+											? gradeList.reduce((a, b) => {
+													return {
+														studentPoint:
+															a.studentPoint +
+															b.studentPoint,
+													};
+											  }).studentPoint
+											: ""}
+									</TableCell>
+								</TableRow>
+							</TableBody>
+						</Table>
+					</TableContainer>
+					<ListRequestReview
+						gradeList={gradeList.filter(
+							(item) => item.isReviewRequest
+						)}
+					/>
+					<ModalRequestReview
+						open={openModal}
+						onClose={() => {
+							setOpenModal(false);
+						}}
+						gradeList={gradeList}
+					/>
+				</>
+			) : (
+				<h2>Waiting for teacher to upload</h2>
+			)}
+		</div>
 	);
 }
