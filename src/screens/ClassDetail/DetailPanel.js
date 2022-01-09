@@ -71,7 +71,7 @@ export default function DetailPanel({
 							sx={{ width: "85%" }}
 							onClick={handleClickInvite}
 						>
-							Class Invitation Link
+							Invitation Link
 						</Button>
 					)}
 

@@ -52,7 +52,7 @@ export default function ClassDetail() {
 	const [openError, setOpenErrorModal] = useState(false);
 	const [gradeBoard, setGradeBoard] = useState([]);
 	const user = useSelector((state) => state.user);
-	const isTeacher = user.studentId === "" && !user.isAdmin;
+	const isTeacher = !user.studentId && user.studentId === "" && !user.isAdmin;
 	const classDetail = useSelector((state) => state.classDetail);
 	const { id } = useParams();
 
