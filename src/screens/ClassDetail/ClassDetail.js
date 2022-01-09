@@ -52,7 +52,7 @@ export default function ClassDetail() {
 	const [openError, setOpenErrorModal] = useState(false);
 	const [gradeBoard, setGradeBoard] = useState([]);
 	const user = useSelector((state) => state.user);
-	const isTeacher = !user.studentId && user.studentId === "" && !user.isAdmin;
+	const isTeacher = !user.studentId;
 	const classDetail = useSelector((state) => state.classDetail);
 	const { id } = useParams();
 
@@ -69,7 +69,7 @@ export default function ClassDetail() {
 			let data = await ClassesService.getDetailClass(id);
 			// let listRequest = await ClassesService.getListReviewRequest(id);
 			console.log(data);
-			if (!user.isAdmin) await getGradeboard();
+			await getGradeboard();
 			try {
 				let inviteLink = await ClassesService.inviteToClass({
 					classId: id,
@@ -110,22 +110,21 @@ export default function ClassDetail() {
 						getGradeboard={getGradeboard}
 					/>
 				</TabPanel>
-				{!user.isAdmin && (
-					<TabPanel value={tabIndex} index={1}>
-						{isTeacher || user.isAdmin ? (
-							<GradePanel
-								gradeBoard={gradeBoard}
-								setGradeBoard={async () => {
-									let grade =
-										await ClassesService.getGradeboard(id);
-									setGradeBoard(grade);
-								}}
-							/>
-						) : (
-							<StudentGradePanel gradeBoard={gradeBoard} />
-						)}
-					</TabPanel>
-				)}
+				<TabPanel value={tabIndex} index={1}>
+					{isTeacher ? (
+						<GradePanel
+							gradeBoard={gradeBoard}
+							setGradeBoard={async () => {
+								let grade = await ClassesService.getGradeboard(
+									id
+								);
+								setGradeBoard(grade);
+							}}
+						/>
+					) : (
+						<StudentGradePanel gradeBoard={gradeBoard} />
+					)}
+				</TabPanel>
 
 				<TabPanel value={tabIndex} index={2}>
 					<PeoplePanel classDetail={classDetail} />
@@ -142,9 +141,7 @@ export default function ClassDetail() {
 						}}
 					>
 						<BottomNavigationAction label="Detail" />
-						{!user.isAdmin && (
-							<BottomNavigationAction label="Grade" />
-						)}
+						<BottomNavigationAction label="Grade" />
 						<BottomNavigationAction label="People" />
 					</BottomNavigation>
 				</Paper>

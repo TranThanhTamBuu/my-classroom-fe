@@ -151,9 +151,9 @@ export default function ModalClassGrade({
 					onClickCancelEdit={onClickCancelEdit}
 					onClickSaveEdit={onClickSaveEdit}
 					handleOnDragEnd={handleOnDragEnd}
-					isTeacher={!isStudent && !user.isAdmin}
+					isTeacher={!isStudent}
 				/>
-				{!isStudent && !user.isAdmin && (
+				{!isStudent && (
 					<>
 						<TextField
 							autoFocus
@@ -182,7 +182,7 @@ export default function ModalClassGrade({
 				)}
 			</div>
 			<div>
-				{!isStudent && !user.isAdmin && (
+				{!isStudent && (
 					<>
 						<Button
 							disabled={!isValid}
