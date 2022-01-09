@@ -29,15 +29,11 @@ export default function DetailPanel({
 	const [addAnchorEl, setAddAnchorEl] = useState(false);
 	const [addPopper, toggleAddPopper] = useToggle(false);
 	const [modalInvite, toggleModalInvite] = useToggle(false);
-	const [modalClassGrade, toggleModalClassGrade] = useToggle(false);
 	const user = useSelector((state) => state.user);
 	const [openCopyLinkAlert, setOpenCopyLinkAlert] = useState(false);
 	const handleClickInvite = (e) => {
 		setAddAnchorEl(e.currentTarget);
 		toggleAddPopper(true);
-	};
-	const handleClickClassGrade = () => {
-		toggleModalClassGrade(true);
 	};
 	return (
 		<>
@@ -63,7 +59,9 @@ export default function DetailPanel({
 				<Stack spacing={2} sx={{ flexGrow: 1, mr: 3 }}>
 					<Paper sx={{ p: 2 }}>
 						<Typography>Class code</Typography>
-						<b style={{color: "#1967d2"}}>{classDetail.enterCode}</b>
+						<b style={{ color: "#1967d2" }}>
+							{classDetail.enterCode}
+						</b>
 					</Paper>
 					{inviteLink && (
 						<Button
@@ -126,8 +124,6 @@ export default function DetailPanel({
 					{" "}
 					<ModalClassGrade
 						isStudent={user.studentId.length > 0}
-						open={modalClassGrade}
-						onClose={() => toggleModalClassGrade(false)}
 						id={classDetail._id}
 						getGradeboard={getGradeboard}
 					/>

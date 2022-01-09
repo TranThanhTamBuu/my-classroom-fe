@@ -15,6 +15,8 @@ import ClassesService from "services/classes.service";
 import { useSelector } from "react-redux";
 import AssignmentTable from "../AssignmentTable";
 import { useToggle } from "react-use";
+import CircularProgress from "@mui/material/CircularProgress";
+
 import { showSnackbar } from "actions/snackbar.action";
 let schema = yup.object().shape({
 	name: yup.string().trim().required("Name must not be empty"),
@@ -24,13 +26,7 @@ let schema = yup.object().shape({
 		.positive("Point must be positive"),
 });
 
-export default function ModalClassGrade({
-	open,
-	onClose,
-	id,
-	isStudent,
-	getGradeboard,
-}) {
+export default function ModalClassGrade({ id, isStudent, getGradeboard }) {
 	const [listGrade, setListGrade] = useState([]);
 	const dispatch = useDispatch();
 	const [isLoading, setLoading] = useToggle(false);
@@ -125,7 +121,6 @@ export default function ModalClassGrade({
 			dispatch(showSnackbar(String(err)));
 		} finally {
 			setLoading(false);
-			onClose();
 		}
 	};
 	const handleOnDragEnd = (result) => {
@@ -143,42 +138,56 @@ export default function ModalClassGrade({
 		// 	<DialogTitle>Join class</DialogTitle>
 		<div>
 			<div>
-				<AssignmentTable
-					onClickDelete={onClickDelete}
-					items={listGrade}
-					setItem={setListGrade}
-					onClickEdit={onClickEdit}
-					onClickCancelEdit={onClickCancelEdit}
-					onClickSaveEdit={onClickSaveEdit}
-					handleOnDragEnd={handleOnDragEnd}
-					isTeacher={!isStudent}
-				/>
-				{!isStudent && (
+				{listGrade.length > 0 ? (
 					<>
-						<TextField
-							autoFocus
-							margin="dense"
-							id="name"
-							label="Name"
-							type="text"
-							fullWidth
-							variant="filled"
-							{...register("name")}
-							helperText={errors.name?.message}
-							error={errors.name?.message ? true : false}
+						<AssignmentTable
+							onClickDelete={onClickDelete}
+							items={listGrade}
+							setItem={setListGrade}
+							onClickEdit={onClickEdit}
+							onClickCancelEdit={onClickCancelEdit}
+							onClickSaveEdit={onClickSaveEdit}
+							handleOnDragEnd={handleOnDragEnd}
+							isTeacher={!isStudent}
 						/>
-						<TextField
-							margin="dense"
-							id="point"
-							label="Point"
-							type="number"
-							fullWidth
-							variant="filled"
-							{...register("point")}
-							helperText={errors.point?.message}
-							error={errors.point?.message ? true : false}
-						/>
+						{!isStudent && (
+							<>
+								<TextField
+									autoFocus
+									margin="dense"
+									id="name"
+									label="Name"
+									type="text"
+									fullWidth
+									variant="filled"
+									{...register("name")}
+									helperText={errors.name?.message}
+									error={errors.name?.message ? true : false}
+								/>
+								<TextField
+									margin="dense"
+									id="point"
+									label="Point"
+									type="number"
+									fullWidth
+									variant="filled"
+									{...register("point")}
+									helperText={errors.point?.message}
+									error={errors.point?.message ? true : false}
+								/>
+							</>
+						)}
 					</>
+				) : (
+					<div
+						style={{
+							display: "flex",
+							justifyContent: "center",
+							alignItems: "center",
+						}}
+					>
+						<CircularProgress />
+					</div>
 				)}
 			</div>
 			<div>
