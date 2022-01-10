@@ -107,11 +107,11 @@ export default function RequestReviewCard(props) {
 	const classDetail = useSelector((state) => state.classDetail);
 	const [state, setState] = useState(props.content);
 	const user = useSelector((state) => state.user);
-	const isTeacher = user.studentId === "";
+	const isTeacher = !user.studentId;
 	const author = classDetail.students.find(
 		(student) => student.studentId === state.studentId
 	);
-
+	const canComment = props.isTeacher || !!user.studentId;
 	console.log(state);
 	let studentComment = state.studentComment;
 	let listComment = [
@@ -133,7 +133,7 @@ export default function RequestReviewCard(props) {
 	listComment.sort((a, b) => a.time - b.time);
 	const {
 		register,
-		setValue,
+		reset,
 		getValues,
 		formState: { isValid },
 	} = useForm({
@@ -180,6 +180,7 @@ export default function RequestReviewCard(props) {
 				dispatch(showSnackbar(String(err)));
 			}
 		}
+		reset();
 		setLoading(false);
 	};
 
@@ -223,7 +224,7 @@ export default function RequestReviewCard(props) {
 					<b>{state.expectedGrade}</b>
 				</p>
 				<p>{`Explain: ${studentComment[0].comment}`}</p>
-				{!state.isFinal && (
+				{canComment && !state.isFinal && (
 					<>
 						<hr />
 

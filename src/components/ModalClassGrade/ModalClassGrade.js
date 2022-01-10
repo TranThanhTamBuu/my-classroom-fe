@@ -30,7 +30,11 @@ export default function ModalClassGrade({ id, isStudent, getGradeboard }) {
 	const [listGrade, setListGrade] = useState([]);
 	const dispatch = useDispatch();
 	const [isLoading, setLoading] = useToggle(false);
+	const classDetail = useSelector((state) => state.classDetail);
 	const user = useSelector((state) => state.user);
+	const isTeacher = classDetail.teachers.find(
+		(teacher) => teacher._id.localeCompare(user._id) === 0
+	);
 	const {
 		register,
 		setValue,
@@ -148,9 +152,9 @@ export default function ModalClassGrade({ id, isStudent, getGradeboard }) {
 							onClickCancelEdit={onClickCancelEdit}
 							onClickSaveEdit={onClickSaveEdit}
 							handleOnDragEnd={handleOnDragEnd}
-							isTeacher={!isStudent}
+							isTeacher={!isStudent && isTeacher}
 						/>
-						{!isStudent && (
+						{isTeacher && !isStudent && (
 							<>
 								<TextField
 									autoFocus
@@ -191,7 +195,7 @@ export default function ModalClassGrade({ id, isStudent, getGradeboard }) {
 				)}
 			</div>
 			<div>
-				{!isStudent && (
+				{isTeacher && !isStudent && (
 					<>
 						<Button
 							disabled={!isValid}

@@ -20,10 +20,12 @@ export default function StudentGradePanel(props) {
 			gradeList.push({
 				name: key,
 				...value,
+				position: props.gradeBoard.assignmentIndex[key],
 			});
 	}
 
 	gradeList = gradeList.sort((a, b) => a.position - b.position);
+	console.log(props.gradeBoard);
 
 	return (
 		<div>

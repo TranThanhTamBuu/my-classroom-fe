@@ -34,6 +34,10 @@ export default function GradePanel(props) {
 	const [openFinalizeModal, setOpenFinalizedModal] = useToggle(false);
 	const [openBackdrop, setBackDrop] = useToggle(false);
 	const classDetail = useSelector((state) => state.classDetail);
+	const user = useSelector((state) => state.user);
+	const isTeacher = classDetail.teachers.find(
+		(teacher) => teacher._id.localeCompare(user._id) === 0
+	);
 	const listGrade = props.gradeBoard.data.map((row) => {
 		return { ...row, id: row.StudentId };
 	});
@@ -123,7 +127,7 @@ export default function GradePanel(props) {
 			maxPoint: value.point,
 			id: value.id,
 			position: value.index,
-			isFinal: value.isFinalized
+			isFinal: value.isFinalized,
 		});
 	}
 	assignmentsColumn = assignmentsColumn.sort(
@@ -162,7 +166,7 @@ export default function GradePanel(props) {
 			return {
 				field: key.name,
 				width: 120,
-				editable: true,
+				editable: isTeacher,
 				headerAlign: "center",
 				align: "center",
 				type: "number",
@@ -214,48 +218,59 @@ export default function GradePanel(props) {
 		<>
 			{listGrade.length > 0 ? (
 				<>
-					<Stack direction="row" spacing={4} sx={{ pb: 2 }}>
-						<Button
-							variant="contained"
-							onClick={() => {
-								setOpenModal(true);
-							}}
-						>
-							Import
-						</Button>
-						<Button
-							variant="contained"
-							onClick={() => {
-								let ws = XLSX.utils.json_to_sheet([
-									...props.gradeBoard.data.map((student) => {
-										let sum = 0;
-										assignmentsColumn.forEach((cur) => {
-											let col = cur.name;
-											let v1 = student[col] ?? 0;
-											sum += parseInt(v1);
-										});
-										return {
-											...student,
-											Total: sum,
-										};
-									}),
-								]);
-								let wb = XLSX.utils.book_new();
-								XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
-								XLSX.writeFile(wb, "grade.xlsx");
-							}}
-						>
-							Export
-						</Button>
-						<Button
-							variant="contained"
-							onClick={() => {
-								setOpenFinalizedModal(true);
-							}}
-						>
-							Finalize
-						</Button>
-					</Stack>
+					{isTeacher && (
+						<Stack direction="row" spacing={4} sx={{ pb: 2 }}>
+							<Button
+								variant="contained"
+								onClick={() => {
+									setOpenModal(true);
+								}}
+							>
+								Import
+							</Button>
+							<Button
+								variant="contained"
+								onClick={() => {
+									let ws = XLSX.utils.json_to_sheet([
+										...props.gradeBoard.data.map(
+											(student) => {
+												let sum = 0;
+												assignmentsColumn.forEach(
+													(cur) => {
+														let col = cur.name;
+														let v1 =
+															student[col] ?? 0;
+														sum += parseInt(v1);
+													}
+												);
+												return {
+													...student,
+													Total: sum,
+												};
+											}
+										),
+									]);
+									let wb = XLSX.utils.book_new();
+									XLSX.utils.book_append_sheet(
+										wb,
+										ws,
+										"Sheet 1"
+									);
+									XLSX.writeFile(wb, "grade.xlsx");
+								}}
+							>
+								Export
+							</Button>
+							<Button
+								variant="contained"
+								onClick={() => {
+									setOpenFinalizedModal(true);
+								}}
+							>
+								Finalize
+							</Button>
+						</Stack>
+					)}
 					<Paper
 						className="datagrid"
 						sx={{ height: "500px", width: "100%" }}
@@ -270,7 +285,10 @@ export default function GradePanel(props) {
 							maxColumns={6}
 						/>
 					</Paper>
-					<ListRequestReview gradeList={assignmentsColumn} />
+					<ListRequestReview
+						gradeList={assignmentsColumn}
+						isTeacher={isTeacher}
+					/>
 					<Snackbar
 						open={openError}
 						autoHideDuration={6000}

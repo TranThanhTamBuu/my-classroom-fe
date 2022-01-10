@@ -68,6 +68,7 @@ export default function ListRequestReview(props) {
 				<RequestReviewCard
 					key={`${item.id}${item.name}`}
 					content={item}
+					isTeacher={props.isTeacher}
 				/>
 			))}
 		</Container>
